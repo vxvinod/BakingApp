@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.example.a60010743.bakingpro.Adapters.RecepieStepsAdapter;
 
-public class RecepieSteps extends FragmentActivity {
+public class RecepieStepsActivity extends FragmentActivity {
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
