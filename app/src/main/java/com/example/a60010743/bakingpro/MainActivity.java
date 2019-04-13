@@ -1,5 +1,6 @@
 package com.example.a60010743.bakingpro;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
@@ -12,6 +13,8 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -33,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final static String TAG_NAME = "MainActivity";
     private static RecepieViewModel mRecepieViewModel;
-
+    private List<String> mRecepieNames = new ArrayList<String>();
 //    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
 //            = new BottomNavigationView.OnNavigationItemSelectedListener() {
 //
@@ -58,25 +61,41 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final GridView recepieGridView = (GridView) findViewById(R.id.baking_grid_view);
-        recepieGridView.setAdapter(new RecepieAdapter(this, recepieNames));
-
         mRecepieViewModel = ViewModelProviders.of(this).get(RecepieViewModel.class);
+        final GridView recepieGridView = (GridView) findViewById(R.id.baking_grid_view);
+//        Log.d(TAG_NAME, "RecepieItems-----"+ mRecepieViewModel.getmAllRecepieItems());
+        //recepieNames = mRecepieViewModel.getmAllRecepieItems();
+
+        final RecepieAdapter adapter = new RecepieAdapter(this, null);
+        recepieGridView.setAdapter(adapter);
+
+
         // Build Url
 
         // Fetch Data from URL
-        new fetchData().execute();
+        //new fetchData().execute();
         // Store fetched data in DB
 
-        mRecepieViewModel.getAllRecepies().observe(this, new Observer<List<RecepieDetails>>() {
+        mRecepieViewModel.getmAllRecepieItems().observe(this, new Observer<List<String>>() {
             @Override
-            public void onChanged(@Nullable List<RecepieDetails> recepieDetails) {
-                //recepieGridView.setAdapter();
+            public void onChanged(@Nullable List<String> strings) {
+                mRecepieNames = strings;
+                adapter.setRecepieItems(strings);
+            }
+        });
+
+        recepieGridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, RecepieStepsActivity.class);
+                Log.d(TAG_NAME, "recepieItem"+mRecepieNames.get(position).toString());
+                intent.putExtra("recepieItem", mRecepieNames.get(position).toString());
+                startActivity(intent);
+
             }
         });
 
 
-        //Intent intent = new Intent(this, RecepieStepsActivity.class);
        // startActivity(intent);
    //     BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
 //        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -127,11 +146,13 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    public String[] recepieNames = {
-            "Recepie-1", "Recepie-2", "Recepie-3",
-            "Recepie-4", "Recepie-5", "Recepie-6",
-            "Recepie-7", "Recepie-8", "Recepie-9",
-            "Recepie-10", "Recepie-11", "Recepie-12"
-    };
+//    public String[] recepieNames = {
+//            "Recepie-1", "Recepie-2", "Recepie-3",
+//            "Recepie-4", "Recepie-5", "Recepie-6",
+//            "Recepie-7", "Recepie-8", "Recepie-9",
+//            "Recepie-10", "Recepie-11", "Recepie-12"
+//    };
+
+
 
 }

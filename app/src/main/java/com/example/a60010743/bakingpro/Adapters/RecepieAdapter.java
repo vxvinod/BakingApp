@@ -1,6 +1,7 @@
 package com.example.a60010743.bakingpro.Adapters;
 
 import android.app.Activity;
+import android.arch.lifecycle.LiveData;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -28,9 +29,9 @@ import java.util.List;
 public class RecepieAdapter extends BaseAdapter {
     private Context mContext;
     //private List<String> mRecepieNames;
-    private final String[] mRecepieNames;
+    private List<String> mRecepieNames;
 
-    public RecepieAdapter(Context context, String[] recepieNames) {
+    public RecepieAdapter(Context context, List<String> recepieNames) {
         mContext = context;
         mRecepieNames = recepieNames;
         //final List<String> mRecepieNames = new ArrayList<String>(Arrays.asList(recepieNames));
@@ -38,8 +39,13 @@ public class RecepieAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        //if(mRecepieNames == null) { return 0; };
-        return mRecepieNames.length;
+        if(mRecepieNames == null) { return 0; }
+        return mRecepieNames.size();
+    }
+
+    public void setRecepieItems(List<String> recepieItems) {
+        mRecepieNames = recepieItems;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -61,7 +67,7 @@ public class RecepieAdapter extends BaseAdapter {
             gridView = new View(mContext);
             gridView = inflater.inflate(R.layout.grid_view_layout, null);
             TextView tv = (TextView) gridView.findViewById(R.id.android_gridview_text);
-            tv.setText(mRecepieNames[position]);
+            tv.setText(mRecepieNames.get(position));
         } else {
             gridView = (View) convertView;
         }

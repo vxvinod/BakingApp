@@ -19,10 +19,10 @@
         app:layout_constraintRight_toRightOf="parent"
         app:menu="@menu/navigation" />
 
-    <VideoView
+    <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/detail_video_view"
-        android:layout_width="328dp"
-        android:layout_height="173dp"
+        android:layout_width="match_parent"
+        android:layout_height="273dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"

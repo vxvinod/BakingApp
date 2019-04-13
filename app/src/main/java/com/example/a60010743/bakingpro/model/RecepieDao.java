@@ -28,4 +28,14 @@ public interface RecepieDao {
     @Query("SELECT * from recepie_details_table ORDER BY recepieItem ASC")
     LiveData<List<RecepieDetails>>  getAllRecepieDetails();
 
+    @Query("select recepieItem from recepie_details_table")
+    LiveData<List<String>> getAllRecepieItems();
+
+    @Query("SELECT recepieIng FROM recepie_details_table WHERE recepieItem = :recepieItem")
+    LiveData<String> getIngredients(String recepieItem);
+
+    @Query("SELECT recepieSteps FROM recepie_details_table WHERE recepieItem = :recepieItem")
+    LiveData<String> getRecSteps(String recepieItem);
+
+
 }
