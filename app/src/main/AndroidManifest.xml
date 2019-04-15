@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.a60010743.bakingpro">
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,10 +22,22 @@
         </activity>
         <activity
             android:name=".RecepieStepsActivity"
-            android:label="@string/title_activity_recepie_steps" />
+            android:label="@string/title_activity_recepie_steps"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".RecepieDetailsActivity"
-            android:label="@string/title_activity_recepie_details"></activity>
+            android:label="@string/title_activity_recepie_details"
+            android:theme="@style/AppTheme" />
+
+        <receiver android:name=".BakingAppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/baking_app_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

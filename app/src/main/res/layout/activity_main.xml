@@ -11,12 +11,15 @@
         android:id="@+id/baking_grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="auto_fit"
+        android:numColumns="1"
         android:verticalSpacing="25dp"
         android:horizontalSpacing="30dp"
         android:gravity="center"
         android:columnWidth="150dp"
         android:stretchMode="columnWidth"
+        android:padding="60dp"
+        android:textAlignment="center"
+
 
     ></GridView>
 

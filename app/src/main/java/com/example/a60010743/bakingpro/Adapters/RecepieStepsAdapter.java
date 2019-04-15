@@ -20,12 +20,14 @@ import com.example.a60010743.bakingpro.model.RecepieStepDetails;
 import org.w3c.dom.Text;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecepieStepsAdapter extends RecyclerView.Adapter<RecepieStepsAdapter.MyViewHolder>{
 
     private Context mContext;
     private List<RecepieStepDetails> mRecepieSteps;
+    private String mRecepieItem;
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         public TextView textView;
@@ -38,9 +40,10 @@ public class RecepieStepsAdapter extends RecyclerView.Adapter<RecepieStepsAdapte
 
     }
 
-    public RecepieStepsAdapter(Context context, List<RecepieStepDetails> recepieSteps) {
+    public RecepieStepsAdapter(Context context, List<RecepieStepDetails> recepieSteps, String recepieItem) {
         mContext = context;
         mRecepieSteps = recepieSteps;
+        mRecepieItem = recepieItem;
     }
 
     public void setRecepieSteps(List<RecepieStepDetails> recepieStepDetails) {
@@ -64,7 +67,9 @@ public class RecepieStepsAdapter extends RecyclerView.Adapter<RecepieStepsAdapte
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, RecepieDetailsActivity.class);
-                intent.putExtra("recStpDetails",  mRecepieSteps.get(i));
+                //intent.putExtra("recStpDetails",  mRecepieSteps.get(i));
+                intent.putExtra("recepieItem",  mRecepieItem);
+                intent.putExtra("navigationIndex", i);
                 mContext.startActivity(intent);
             }
         });

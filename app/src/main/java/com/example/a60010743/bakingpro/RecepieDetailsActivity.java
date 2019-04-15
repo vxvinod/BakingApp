@@ -1,8 +1,12 @@
 package com.example.a60010743.bakingpro;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -10,10 +14,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.a60010743.bakingpro.Utilities.JsonParseUtils;
 import com.example.a60010743.bakingpro.model.RecepieStepDetails;
+import com.example.a60010743.bakingpro.model.RecepieViewModel;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -26,10 +31,15 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
+import org.json.JSONException;
+
+import java.util.List;
+
 public class RecepieDetailsActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
     private TextView mDescription;
+    private TextView mShortDesc;
     private PlayerView mPlayerView;
     private SimpleExoPlayer mPlayer;
     private boolean mPlayWhenReady = false;
@@ -38,20 +48,35 @@ public class RecepieDetailsActivity extends AppCompatActivity {
     private RecepieStepDetails mRecepieStepDetails;
     private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
     private ComponentListener componentListener;
+    private RecepieViewModel mRecepieViewModel;
+    private int mNavigationIndex;
+    private List<RecepieStepDetails> mRecepieStepDetailsList;
+
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
+                case R.id.navigation_previous:
+                    if(mNavigationIndex == 0) return true;
+                    mNavigationIndex = mNavigationIndex - 1;
+                    mRecepieStepDetails = mRecepieStepDetailsList.get(mNavigationIndex);
+                    mDescription.setText(mRecepieStepDetails.getDesc());
+                    mShortDesc.setText(mRecepieStepDetails.getShortDesc());
+                    setUpPlayer(mRecepieStepDetails.getVideoUrl(), mRecepieStepDetails.getThumbnailUrl());
                     return true;
                 case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
+                    onBackPressed();
                     return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
+                case R.id.navigation_next:
+                    if(mNavigationIndex == mRecepieStepDetailsList.size()) return true;
+                    mNavigationIndex = mNavigationIndex + 1;
+                    mRecepieStepDetails = mRecepieStepDetailsList.get(mNavigationIndex);
+                    mDescription.setText(mRecepieStepDetails.getDesc());
+                    mShortDesc.setText(mRecepieStepDetails.getShortDesc());
+                    setUpPlayer(mRecepieStepDetails.getVideoUrl(), mRecepieStepDetails.getThumbnailUrl());
                     return true;
             }
             return false;
@@ -61,23 +86,72 @@ public class RecepieDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRecepieStepDetails = getIntent().getParcelableExtra("recStpDetails");
-        Log.d("Test", "videoUrl"+mRecepieStepDetails.getVideoUrl().toString());
-        Log.d("Test", "ShortDesc----"+mRecepieStepDetails.getDesc().toString());
-
         setContentView(R.layout.activity_recepie_details);
         componentListener = new ComponentListener();
 
         mTextMessage = (TextView) findViewById(R.id.message);
         mPlayerView = (PlayerView) findViewById(R.id.detail_video_view);
         mDescription = (TextView) findViewById(R.id.description);
+        mShortDesc   = (TextView) findViewById(R.id.shortDesc);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        mDescription.setText(mRecepieStepDetails.getDesc());
+
+
+        String recepieItem = getIntent().getStringExtra("recepieItem");
+        final int navigationIndex = getIntent().getIntExtra("navigationIndex",0);
+        Log.d("Test", "recepieITem--"+recepieItem);
+        Log.d("Test", "NavigationIndex----"+navigationIndex);
+        mRecepieViewModel = ViewModelProviders.of(this).get(RecepieViewModel.class);
+        mRecepieViewModel.getRecepieSteps(recepieItem).observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                try {
+                    mRecepieStepDetailsList = JsonParseUtils.parseRecSteps(s);
+                    mRecepieStepDetails = mRecepieStepDetailsList.get(navigationIndex);
+                    mDescription.setText(mRecepieStepDetails.getDesc());
+                    mShortDesc.setText(mRecepieStepDetails.getShortDesc());
+                    String videoUrl = mRecepieStepDetails.getVideoUrl();
+                    String thumbnailUrl = mRecepieStepDetails.getThumbnailUrl();
+                    setUpPlayer(videoUrl, thumbnailUrl);
+                    //displayIngredients();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+        });
+      //  mRecepieStepDetails = getIntent().getParcelableExtra("recStpDetails");
+
+
+
+
+    }
+
+    public void setUpPlayer(String videoUrl, String thumbnailUrl) {
+        if (videoUrl.isEmpty() || videoUrl.equals("") || videoUrl == null) {
+            if (thumbnailUrl.isEmpty() || thumbnailUrl.equals("") || thumbnailUrl == null) {
+
+                return;
+            } else {
+                Log.d("Test", "IndideThumbnail" + thumbnailUrl.toString());
+                Uri uri = Uri.parse(mRecepieStepDetails.getThumbnailUrl());
+                MediaSource mediaSource = buildMediaSource(uri);
+                mPlayer.prepare(mediaSource, true, false);
+            }
+        } else {
+            Log.d("Test", "IndideVideo" + videoUrl.toString());
+            Uri uri = Uri.parse(mRecepieStepDetails.getVideoUrl());
+            MediaSource mediaSource = buildMediaSource(uri);
+            mPlayer.prepare(mediaSource, true, false);
+        }
     }
 
     private void initializePlayer() {
         if (mPlayer == null) {
+            String videoUrl = null;
+            String thumbnailUrl = null;
             TrackSelection.Factory adaptiveTrackSelectionFactory =
                     new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
 
@@ -92,26 +166,30 @@ public class RecepieDetailsActivity extends AppCompatActivity {
             mPlayer.seekTo(mCurrentWindow, mPlayBackPosition);
 
             //Uri uri = Uri.parse("https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffd974_-intro-creampie/-intro-creampie.mp4");
-            String videoUrl = mRecepieStepDetails.getVideoUrl().toString();
-            String thumbnailUrl = mRecepieStepDetails.getThumbnailUrl().toString();
+            if(mRecepieStepDetails != null) {
+                videoUrl = mRecepieStepDetails.getVideoUrl().toString();
+                thumbnailUrl = mRecepieStepDetails.getThumbnailUrl().toString();
+            }
 
-            if(videoUrl.isEmpty() || videoUrl.equals("") || videoUrl == null) {
-                if(thumbnailUrl.isEmpty() || thumbnailUrl.equals("") || thumbnailUrl == null) {
+            if (videoUrl != null) {
 
-                    return;
+                if (videoUrl.isEmpty() || videoUrl.equals("") || videoUrl == null) {
+                    if (thumbnailUrl.isEmpty() || thumbnailUrl.equals("") || thumbnailUrl == null) {
+
+                        return;
+                    } else {
+                        Log.d("Test", "IndideThumbnail" + thumbnailUrl.toString());
+                        Uri uri = Uri.parse(mRecepieStepDetails.getThumbnailUrl());
+                        MediaSource mediaSource = buildMediaSource(uri);
+                        mPlayer.prepare(mediaSource, true, false);
+                    }
                 } else {
-                    Log.d("Test", "IndideThumbnail"+thumbnailUrl.toString());
-                    Uri uri = Uri.parse(mRecepieStepDetails.getThumbnailUrl());
+                    Log.d("Test", "IndideVideo" + videoUrl.toString());
+                    Uri uri = Uri.parse(mRecepieStepDetails.getVideoUrl());
                     MediaSource mediaSource = buildMediaSource(uri);
                     mPlayer.prepare(mediaSource, true, false);
                 }
-            } else {
-                Log.d("Test", "IndideVideo"+videoUrl.toString());
-                Uri uri = Uri.parse(mRecepieStepDetails.getVideoUrl());
-                MediaSource mediaSource = buildMediaSource(uri);
-                mPlayer.prepare(mediaSource, true, false);
             }
-
         }
     }
 

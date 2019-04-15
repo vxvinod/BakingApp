@@ -7,6 +7,7 @@ import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,7 +25,7 @@ import org.json.JSONException;
 
 import java.util.List;
 
-public class RecepieStepsActivity extends FragmentActivity {
+public class RecepieStepsActivity extends AppCompatActivity {
 
     private final String TAG = "RecepieStepsActivity";
     private RecyclerView mRecyclerView;
@@ -44,12 +45,11 @@ public class RecepieStepsActivity extends FragmentActivity {
 
 
         Intent intent = getIntent();
-        String recepieItem = intent.getStringExtra("recepieItem");
+        final String recepieItem = intent.getStringExtra("recepieItem");
         Log.d("RecepieStepsActivity", "recepieItem"+recepieItem);
 
         mStepsLayoutManager = new LinearLayoutManager(this);
         resStpRecyclerView.setLayoutManager(mStepsLayoutManager);
-
 
         mRecepieViewModel.getIngredients(recepieItem).observe(this, new Observer<String>() {
             @Override
@@ -69,7 +69,8 @@ public class RecepieStepsActivity extends FragmentActivity {
             public void onChanged(@Nullable String s) {
                 try {
                     mRecepieStepDetails = JsonParseUtils.parseRecSteps(s);
-                    mAdapter = new RecepieStepsAdapter(RecepieStepsActivity.this, mRecepieStepDetails);
+                    mAdapter = new RecepieStepsAdapter(RecepieStepsActivity.this, mRecepieStepDetails,
+                                                        recepieItem);
                     resStpRecyclerView.setAdapter(mAdapter);
                     //displayIngredients();
                 } catch (JSONException e) {
