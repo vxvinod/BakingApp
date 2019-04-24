@@ -12,9 +12,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.a60010743.bakingpro.Adapters.RecepieIngAdapter;
 import com.example.a60010743.bakingpro.Adapters.RecepieStepsAdapter;
 import com.example.a60010743.bakingpro.Utilities.JsonParseUtils;
 import com.example.a60010743.bakingpro.model.RecepieIngredients;
@@ -23,6 +28,7 @@ import com.example.a60010743.bakingpro.model.RecepieViewModel;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecepieStepsActivity extends AppCompatActivity {
@@ -32,16 +38,25 @@ public class RecepieStepsActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mStepsLayoutManager;
     private RecepieViewModel mRecepieViewModel;
-    private List<RecepieIngredients> mRecepieIngredients;
+
+    private RecyclerView mRecIngView;
+    private RecyclerView.Adapter mIngAdapter;
+    private RecyclerView.LayoutManager mIngLayoutManager;
     private List<RecepieStepDetails> mRecepieStepDetails;
+    private Button favButton;
+    private boolean favBtnPressed = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recepie_steps);
         mRecepieViewModel = ViewModelProviders.of(this).get(RecepieViewModel.class);
-        final TextView ingredients = (TextView) findViewById(R.id.IngTextView);
+        final RecyclerView resIngRecyclerview = (RecyclerView) findViewById(R.id.IngRecyclerView);
         final RecyclerView resStpRecyclerView = (RecyclerView) findViewById(R.id.recepie_steps_recycler_view);
+        favButton = (Button) findViewById(R.id.fav_button);
        // resStpRecyclerView.setHasFixedSize(true);
+
 
 
         Intent intent = getIntent();
@@ -51,16 +66,24 @@ public class RecepieStepsActivity extends AppCompatActivity {
         mStepsLayoutManager = new LinearLayoutManager(this);
         resStpRecyclerView.setLayoutManager(mStepsLayoutManager);
 
+        mIngLayoutManager = new LinearLayoutManager(this);
+        resIngRecyclerview.setLayoutManager(mIngLayoutManager);
+
         mRecepieViewModel.getIngredients(recepieItem).observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
+                List<RecepieIngredients> recepieIngredients;
                 try {
-                    mRecepieIngredients = JsonParseUtils.parseIngData(s);
+                    recepieIngredients = JsonParseUtils.parseIngData(s);
+                    mIngAdapter = new RecepieIngAdapter(RecepieStepsActivity.this,
+                                                    recepieIngredients);
+                   // List<String> ingData = convertToStringList(recepieIngredients);
+
                     //displayIngredients();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                ingredients.setText(displayIngredients());
+                resIngRecyclerview.setAdapter(mIngAdapter);
             }
         });
 
@@ -82,20 +105,53 @@ public class RecepieStepsActivity extends AppCompatActivity {
 
         });
 
+        favButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(favBtnPressed == false) {
+                    mRecepieViewModel.updateFavouriteRecItem(recepieItem, true);
+                    Log.d(TAG, recepieItem + true + "Favourite data written to DB");
+                    favButton.setText("Marked Fav");
+                    favButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                    favBtnPressed = true;
+                } else {
+                    mRecepieViewModel.updateFavouriteRecItem(recepieItem, false);
+                    Log.d(TAG, recepieItem + false + "UnFavourite data written to DB");
+                    favButton.setText("Mark as Fav");
+                    favButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    favBtnPressed = false;
+                }
+            }
+        });
+
 
 
     }
 
-    public String displayIngredients() {
-        String ingDisplay = "";
-        for(RecepieIngredients rec: mRecepieIngredients) {
-            ingDisplay = ingDisplay + rec.getIngredients()+": "+rec.getQuantity()+" "+rec.getMeasure()+"\n";
+//    public String displayIngredients() {
+//        String ingDisplay = "";
+//        for(RecepieIngredients rec: mRecepieIngredients) {
+//            ingDisplay = ingDisplay + rec.getIngredients()+": "+rec.getQuantity()+" "+rec.getMeasure()+"\n";
+////            Log.d(TAG, "Ing"+ rec.getIngredients());
+////            Log.d(TAG, "Quantity"+ rec.getQuantity());
+////            Log.d(TAG, "Measure"+ rec.getMeasure());
+//        }
+//        Log.d(TAG, "Final String "+ ingDisplay);
+//        return ingDisplay;
+//    }
+
+    public List<String> convertToStringList(List<RecepieIngredients> recepieIngredients) {
+        List<String> ingData = new ArrayList<>();
+        for(RecepieIngredients rec: recepieIngredients) {
+            String ingredient = rec.getIngredients()+":  "+rec.getQuantity()+" "+rec.getMeasure();
+            ingData.add(ingredient);
 //            Log.d(TAG, "Ing"+ rec.getIngredients());
 //            Log.d(TAG, "Quantity"+ rec.getQuantity());
 //            Log.d(TAG, "Measure"+ rec.getMeasure());
         }
-        Log.d(TAG, "Final String "+ ingDisplay);
-        return ingDisplay;
+
+        return ingData;
+
     }
     public String[] recepieSteps = {
             "Recepie-1", "Recepie-2", "Recepie-3",

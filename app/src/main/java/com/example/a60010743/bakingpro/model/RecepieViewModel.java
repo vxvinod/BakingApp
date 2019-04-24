@@ -47,4 +47,13 @@ public class RecepieViewModel extends AndroidViewModel {
         return recepieSteps;
     }
 
+    public void updateFavouriteRecItem(String recItem, Boolean fav) {
+        mRepository.updateFavouriteRecItem(recItem, fav);
+    }
+
+    public LiveData<List<String>> getFavIngredients() {
+        LiveData<List<String>> favIng = mRepository.getFavIngredients();
+        return favIng;
+    }
+
 }

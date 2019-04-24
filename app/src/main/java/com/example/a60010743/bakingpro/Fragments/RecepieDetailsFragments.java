@@ -13,6 +13,9 @@ import com.example.a60010743.bakingpro.R;
 public class RecepieDetailsFragments extends Fragment {
 
 
+    public RecepieDetailsFragments() {
+
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

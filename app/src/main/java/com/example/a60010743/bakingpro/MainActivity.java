@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         // Build Url
 
         // Fetch Data from URL
-        //new fetchData().execute();
+        new fetchData().execute();
         // Store fetched data in DB
 
         mRecepieViewModel.getmAllRecepieItems().observe(this, new Observer<List<String>>() {

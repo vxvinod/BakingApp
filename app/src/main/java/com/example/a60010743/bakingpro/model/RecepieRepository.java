@@ -6,7 +6,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RecepieRepository  {
 
@@ -45,6 +47,17 @@ public class RecepieRepository  {
         return recepieSteps;
     }
 
+    public LiveData<List<String>> getFavIngredients() {
+        LiveData<List<String>> favIngredients = mRecepieDao.getFavIngredients();
+        return favIngredients;
+    }
+
+    public void updateFavouriteRecItem(String recItem, boolean fav) {
+       // Map<String, List<String>> updateDetails = new HashMap<String, List<String>>();
+        UpdateDetails updateDb = new UpdateDetails(recItem, fav);
+        new updateAsyncTask(mRecepieDao).execute(updateDb);
+    }
+
     public static class insertAsyncTask extends AsyncTask<RecepieDetails, Void, Void>{
 
         private RecepieDao mRecepieDao;
@@ -57,6 +70,32 @@ public class RecepieRepository  {
         protected Void doInBackground(RecepieDetails... recepieDetails) {
             mRecepieDao.insertRecepieDetails(recepieDetails[0]);
             return null;
+        }
+    }
+
+    public static class updateAsyncTask extends AsyncTask<UpdateDetails, Void, Void>{
+
+        private RecepieDao mRecepieDao;
+
+        updateAsyncTask(RecepieDao recepieDao) {
+            mRecepieDao = recepieDao;
+        }
+
+        @Override
+        protected Void doInBackground(UpdateDetails... updateDetails) {
+            mRecepieDao.updateFavourite(updateDetails[0].recepieItem, updateDetails[0].fav);
+            return null;
+        }
+    }
+
+    public class UpdateDetails {
+
+        String recepieItem;
+        boolean fav;
+
+        UpdateDetails(String recepieItem, boolean fav) {
+            this.recepieItem = recepieItem;
+            this.fav = fav;
         }
     }
 
