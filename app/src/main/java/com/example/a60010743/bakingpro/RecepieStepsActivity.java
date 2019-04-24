@@ -19,9 +19,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.a60010743.bakingpro.Adapters.RecepieIngAdapter;
 import com.example.a60010743.bakingpro.Adapters.RecepieStepsAdapter;
+import com.example.a60010743.bakingpro.Fragments.RecepieDetailsFragments;
 import com.example.a60010743.bakingpro.Fragments.RecepieStepsFragments;
 import com.example.a60010743.bakingpro.Utilities.JsonParseUtils;
 import com.example.a60010743.bakingpro.model.RecepieIngredients;
@@ -33,7 +35,8 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecepieStepsActivity extends AppCompatActivity {
+public class RecepieStepsActivity extends AppCompatActivity implements
+        RecepieStepsFragments.OnStepClickListener{
 
     private final String TAG = "RecepieStepsActivity";
     private RecyclerView mRecyclerView;
@@ -49,25 +52,47 @@ public class RecepieStepsActivity extends AppCompatActivity {
     private String mRecepieItem;
     private boolean favBtnPressed = false;
     private RecepieStepsFragments mRecepieStepsFragments;
+    private boolean mTwoPane = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recepie_steps);
-        mRecepieStepsFragments = new RecepieStepsFragments();
-        Intent intent = getIntent();
+        mTwoPane = getIntent().getExtras().getBoolean("twoPane");
+        mRecepieItem = getIntent().getStringExtra("recepieItem");
+        if(mTwoPane == true) {
+//            RecepieStepsFragments recepieStepsFragments = new RecepieStepsFragments();
+//            recepieStepsFragments.setRecepieItem(mRecepieItem);
+//
+//            FragmentManager fragmentManager = getSupportFragmentManager();
+//            fragmentManager.beginTransaction()
+//                    .add(R.id.recepie_steps_fragment_container, recepieStepsFragments)
+//                    .commit();
 
-        mRecepieItem = intent.getStringExtra("recepieItem");
-        mRecepieStepsFragments.setRecepieItem(mRecepieItem);
+            RecepieDetailsFragments recepieDetailsFragments = new RecepieDetailsFragments();
+            recepieDetailsFragments.setRecepieItem(mRecepieItem);
+            recepieDetailsFragments.setNavigationIndex(getIntent().getIntExtra("navigationIndex",1));
+            FragmentManager detailsFragmentManager = getSupportFragmentManager();
+            detailsFragmentManager.beginTransaction()
+                    .add(R.id.recepie_details_fragment_container, recepieDetailsFragments)
+                    .commit();
+            } else {
+            mRecepieStepsFragments = new RecepieStepsFragments();
+            Intent intent = getIntent();
 
-        mRecepieViewModel = ViewModelProviders.of(this).get(RecepieViewModel.class);
-        mRecepieStepsFragments.setRecepieViewModel(mRecepieViewModel);
+            mRecepieItem = intent.getStringExtra("recepieItem");
+            mRecepieStepsFragments.setRecepieItem(mRecepieItem);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+            mRecepieViewModel = ViewModelProviders.of(this).get(RecepieViewModel.class);
+            mRecepieStepsFragments.setRecepieViewModel(mRecepieViewModel);
 
-        fragmentManager.beginTransaction()
-                .add(R.id.recepie_steps_fragment_container, mRecepieStepsFragments)
-                .commit();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+
+            fragmentManager.beginTransaction()
+                    .add(R.id.recepie_steps_fragment_container, mRecepieStepsFragments)
+                    .commit();
+        }
     }
 
 
@@ -98,6 +123,40 @@ public class RecepieStepsActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onStepClicked(int navigationIndex) {
 
+        Toast.makeText(this, "HHH clicked ="+ navigationIndex, Toast.LENGTH_SHORT).show();
+        if(mTwoPane) {
+              Log.d("TWOPANE", "RECEPIEITEM"+mRecepieItem);
+              Log.d("NAVIGATIONINDEX", "NAVIGATIONINDESX"+navigationIndex);
+//            RecepieStepsFragments recepieStepsFragments = new RecepieStepsFragments();
+//            recepieStepsFragments.setRecepieItem(mRecepieItem);
+//
+//            FragmentManager fragmentManager = getSupportFragmentManager();
+//            fragmentManager.beginTransaction()
+//                    .add(R.id.recepie_steps_fragment_container, recepieStepsFragments)
+//                    .commit();
 
+            RecepieDetailsFragments recepieDetailsFragments = new RecepieDetailsFragments();
+            recepieDetailsFragments.setRecepieItem(mRecepieItem);
+            recepieDetailsFragments.setNavigationIndex(navigationIndex);
+            FragmentManager detailsFragmentManager = getSupportFragmentManager();
+            detailsFragmentManager.beginTransaction()
+                    .replace(R.id.recepie_details_fragment_container, recepieDetailsFragments)
+                    .commit();
+        } else {
+            Log.d("ONEPANE", "RECEPIEITEM"+mRecepieItem);
+            Log.d("NAVIGATIONINDEX", "NAVIGATIONINDESX"+navigationIndex);
+
+            Bundle b = new Bundle();
+            b.putInt("navigationIndex", navigationIndex);
+            b.putString("recepieItem", mRecepieItem);
+
+            final Intent intent = new Intent(this, RecepieDetailsActivity.class);
+            intent.putExtras(b);
+            this.startActivity(intent);
+        }
+
+    }
 }

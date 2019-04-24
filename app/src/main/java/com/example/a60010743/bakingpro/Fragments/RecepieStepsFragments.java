@@ -1,6 +1,10 @@
 package com.example.a60010743.bakingpro.Fragments;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.service.carrier.CarrierMessagingService;
 import android.support.annotation.NonNull;
@@ -24,12 +28,14 @@ import com.example.a60010743.bakingpro.model.RecepieViewModel;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.support.constraint.Constraints.TAG;
 
 
-public class RecepieStepsFragments extends Fragment {
+public class RecepieStepsFragments extends Fragment  implements
+            RecepieStepsAdapter.ListItemClickListener{
 
     private RecyclerView mRecyclerView;
     private RecepieStepsAdapter mAdapter;
@@ -43,6 +49,34 @@ public class RecepieStepsFragments extends Fragment {
     private Button favButton;
     private boolean favBtnPressed = false;
     private String mRecepieItem;
+    public static final String RECEPIE_STEP_DETAILS = "recepie_step_details";
+    public static final String RECEPIE_ITEM = "recepie_item";
+    public static final String VIEW_MODEL = "view_model";
+
+    OnStepClickListener mCallback;
+
+    @Override
+    public void onItemClick(int position) {
+        mCallback.onStepClicked(position);
+    }
+
+    public interface OnStepClickListener {
+        void onStepClicked(int navigationIndex);
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mCallback = (OnStepClickListener) context;
+        } catch(ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                            + "must implement OnStepClickListener");
+        }
+    }
+
+
 
     public RecepieStepsFragments() {
 
@@ -62,17 +96,19 @@ public class RecepieStepsFragments extends Fragment {
         final RecyclerView resIngRecyclerview = (RecyclerView) view.findViewById(R.id.IngRecyclerView);
         final RecyclerView resStpRecyclerView = (RecyclerView) view.findViewById(R.id.recepieStepsRv);
         favButton = (Button) view.findViewById(R.id.fav_button);
-//        Intent intent = getIntent();
-//        final String recepieItem = intent.getStringExtra("recepieItem");
+        Intent intent = getActivity().getIntent();
+        mRecepieItem = intent.getStringExtra("recepieItem");
         Log.d("RecepieStepsActivity", "recepieItem"+ mRecepieItem);
 
         mStepsLayoutManager = new LinearLayoutManager(getContext());
         resStpRecyclerView.setLayoutManager(mStepsLayoutManager);
         mAdapter = new RecepieStepsAdapter(getContext(), null,
-                mRecepieItem);
+                mRecepieItem, mCallback);
         resStpRecyclerView.setAdapter(mAdapter);
+        //mAdapter.setmOnClickListener();
         mIngLayoutManager = new LinearLayoutManager(getContext());
         resIngRecyclerview.setLayoutManager(mIngLayoutManager);
+        mRecepieViewModel = ViewModelProviders.of(this).get(RecepieViewModel.class);
 
         mRecepieViewModel.getIngredients(mRecepieItem).observe(this, new Observer<String>() {
             @Override
@@ -97,17 +133,14 @@ public class RecepieStepsFragments extends Fragment {
             @Override
             public void onChanged(@Nullable String s) {
                 try {
-                    Log.d("Step Details", s);
                     recepieStepDetails = JsonParseUtils.parseRecSteps(s);
-
-                    Log.d("RECEPIEITEM", mRecepieItem);
                     mAdapter = new RecepieStepsAdapter(getContext(), recepieStepDetails,
-                            mRecepieItem);
+                            mRecepieItem, mCallback);
 
                     List<RecepieStepDetails> sd = mAdapter.getDetails();
                     for(RecepieStepDetails res : sd){
-                        Log.d("Step Details - desc", res.getDesc());
-                        Log.d("Step Details-VURL", res.getVideoUrl());
+                        Log.d("Step Details - desc", "msg"+res.getDesc());
+                        Log.d("Step Details-VURL", "msg"+res.getVideoUrl());
                     }
                     //displayIngredients();
                 } catch (JSONException e) {
@@ -139,6 +172,15 @@ public class RecepieStepsFragments extends Fragment {
                 }
             }
         });
+
+
+
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        // Will Take care later....
+       // outState.putStringArrayList(RECEPIE_STEP_DETAILS, List<RecepieStepDetails> mRecepieStepDetails);
     }
 
     public void setRecepieStepDetails(List<RecepieStepDetails> recepieStepDetails) {

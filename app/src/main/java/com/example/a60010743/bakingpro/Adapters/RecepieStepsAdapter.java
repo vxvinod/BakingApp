@@ -25,26 +25,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecepieStepsAdapter extends RecyclerView.Adapter<RecepieStepsAdapter.MyViewHolder>{
-
+    RecepieStepsFragments.OnStepClickListener mCallback;
     private Context mContext;
     private List<RecepieStepDetails> mRecepieSteps;
     private String mRecepieItem;
+    private ListItemClickListener mOnClickListener;
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         public TextView textView;
         public MyViewHolder(View v) {
             super(v);
+//            v.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mOnClick
+//                }
+//            });
             textView = (TextView) v.findViewById(R.id.recepie_recycler_view_text) ;
+
         }
 
 
 
     }
 
-    public RecepieStepsAdapter(Context context, List<RecepieStepDetails> recepieSteps, String recepieItem) {
+    public interface ListItemClickListener {
+        void onItemClick(int position);
+    }
+
+
+
+    public RecepieStepsAdapter(Context context, List<RecepieStepDetails> recepieSteps, String recepieItem,
+                               RecepieStepsFragments.OnStepClickListener mCallback) {
         mContext = context;
         mRecepieSteps = recepieSteps;
         mRecepieItem = recepieItem;
+        this.mCallback = mCallback;
     }
 
     public void setRecepieSteps(List<RecepieStepDetails> recepieStepDetails) {
@@ -68,11 +84,15 @@ public class RecepieStepsAdapter extends RecyclerView.Adapter<RecepieStepsAdapte
         myViewHolder.textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, RecepieDetailsActivity.class);
-                //intent.putExtra("recStpDetails",  mRecepieSteps.get(i));
-                intent.putExtra("recepieItem",  mRecepieItem);
-                intent.putExtra("navigationIndex", i);
-                mContext.startActivity(intent);
+//                Intent intent = new Intent(mContext, RecepieDetailsActivity.class);
+//                //intent.putExtra("recStpDetails",  mRecepieSteps.get(i));
+//                intent.putExtra("recepieItem",  mRecepieItem);
+//                intent.putExtra("navigationIndex", i);
+//                mContext.startActivity(intent);
+                mCallback.onStepClicked(i);
+                Log.d("CLICKED", "Button"+String.valueOf(i));
+
+               // mOnClickListener.onItemClick(i);
             }
         });
     }
@@ -89,6 +109,8 @@ public class RecepieStepsAdapter extends RecyclerView.Adapter<RecepieStepsAdapte
         return mRecepieSteps;
     }
 
-
+    public void setmOnClickListener(ListItemClickListener itemClickListeener){
+        this.mOnClickListener = itemClickListeener;
+    }
 
 }

@@ -37,30 +37,23 @@ public class MainActivity extends AppCompatActivity {
     private final static String TAG_NAME = "MainActivity";
     private static RecepieViewModel mRecepieViewModel;
     private List<String> mRecepieNames = new ArrayList<String>();
-//    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-//            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-//
-//        @Override
-//        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//            switch (item.getItemId()) {
-//                case R.id.navigation_home:
-//                    mTextMessage.setText(R.string.title_home);
-//                    return true;
-//                case R.id.navigation_dashboard:
-//                    mTextMessage.setText(R.string.title_dashboard);
-//                    return true;
-//                case R.id.navigation_notifications:
-//                    mTextMessage.setText(R.string.title_notifications);
-//                    return true;
-//            }
-//            return false;
-//        }
-//    };
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Build Url
+
+        // Fetch Data from URL - NEED TO HANDLE ??
+        // new fetchData().execute();
+        // Store fetched data in DB
+        if(findViewById(R.id.tab_layout_container) != null) {
+            mTwoPane = true;
+        } else {
+            mTwoPane = false;
+        }
+
         mRecepieViewModel = ViewModelProviders.of(this).get(RecepieViewModel.class);
         final GridView recepieGridView = (GridView) findViewById(R.id.baking_grid_view);
 //        Log.d(TAG_NAME, "RecepieItems-----"+ mRecepieViewModel.getmAllRecepieItems());
@@ -68,13 +61,6 @@ public class MainActivity extends AppCompatActivity {
 
         final RecepieAdapter adapter = new RecepieAdapter(this, null);
         recepieGridView.setAdapter(adapter);
-
-
-        // Build Url
-
-        // Fetch Data from URL
-       // new fetchData().execute();
-        // Store fetched data in DB
 
         mRecepieViewModel.getmAllRecepieItems().observe(this, new Observer<List<String>>() {
             @Override
@@ -87,7 +73,14 @@ public class MainActivity extends AppCompatActivity {
         recepieGridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, RecepieStepsActivity.class);
+                Intent intent;
+//                if (mTwoPane == true) {
+//                    intent = new Intent(MainActivity.this, RecepieDetailsActivity.class);
+//                } else {
+//                    intent = new Intent(MainActivity.this, RecepieStepsActivity.class);
+//                }
+                intent = new Intent(MainActivity.this, RecepieStepsActivity.class);
+                intent.putExtra("twoPane", mTwoPane);
                 Log.d(TAG_NAME, "recepieItem"+mRecepieNames.get(position).toString());
                 intent.putExtra("recepieItem", mRecepieNames.get(position).toString());
                 startActivity(intent);

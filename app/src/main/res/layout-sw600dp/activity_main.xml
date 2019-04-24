@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tab_layout_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <GridView
+        android:id="@+id/baking_grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="2"
+        android:verticalSpacing="25dp"
+        android:horizontalSpacing="30dp"
+        android:gravity="center"
+        android:columnWidth="150dp"
+        android:stretchMode="columnWidth"
+        android:padding="60dp"
+        android:textAlignment="center"
+        ></GridView>
+
+</LinearLayout>
