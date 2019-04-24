@@ -22,4 +22,9 @@ public class RecepieDetailsFragments extends Fragment {
         View view = inflater.inflate(R.layout.recepie_detail_fragment_layout, container, false);
         return view;
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
 }

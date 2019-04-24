@@ -7,11 +7,9 @@
     android:orientation="horizontal"
     tools:context=".RecepieStepsActivity">
 
-    <fragment
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:id="@+id/recepie_details_fragment"
-        android:name="com.example.a60010743.bakingpro.Fragments.RecepieDetailsFragments"
-        ></fragment>
+        android:id="@+id/recepie_details_fragment_container"
+        ></FrameLayout>
 </LinearLayout>

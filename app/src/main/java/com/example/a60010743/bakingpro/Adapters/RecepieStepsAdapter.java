@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,7 @@ public class RecepieStepsAdapter extends RecyclerView.Adapter<RecepieStepsAdapte
     }
 
     public void setRecepieSteps(List<RecepieStepDetails> recepieStepDetails) {
+        Log.d("SETDATA", "SETTING DATA");
         mRecepieSteps = recepieStepDetails;
         notifyDataSetChanged();
     }
@@ -79,8 +81,14 @@ public class RecepieStepsAdapter extends RecyclerView.Adapter<RecepieStepsAdapte
 
     @Override
     public int getItemCount() {
+        if(mRecepieSteps == null) return 0;
         return mRecepieSteps.size();
     }
+
+    public List<RecepieStepDetails> getDetails(){
+        return mRecepieSteps;
+    }
+
 
 
 }

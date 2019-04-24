@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.a60010743.bakingpro.Fragments.RecepieDetailsFragments;
 import com.example.a60010743.bakingpro.Utilities.JsonParseUtils;
 import com.example.a60010743.bakingpro.model.RecepieStepDetails;
 import com.example.a60010743.bakingpro.model.RecepieViewModel;
@@ -87,7 +89,17 @@ public class RecepieDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recepie_details);
+
+        RecepieDetailsFragments recepieDetailsFragments = new RecepieDetailsFragments();
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                        .add(R.id.recepie_details_fragment_container, recepieDetailsFragments)
+                        .commit();
+
         componentListener = new ComponentListener();
+
+
 
         mTextMessage = (TextView) findViewById(R.id.message);
         mPlayerView = (PlayerView) findViewById(R.id.detail_video_view);
