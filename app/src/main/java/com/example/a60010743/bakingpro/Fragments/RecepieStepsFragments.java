@@ -20,7 +20,6 @@ import com.example.a60010743.bakingpro.Adapters.RecepieIngAdapter;
 import com.example.a60010743.bakingpro.Adapters.RecepieStepsAdapter;
 import com.example.a60010743.bakingpro.R;
 import com.example.a60010743.bakingpro.Utilities.JsonParseUtils;
-import com.example.a60010743.bakingpro.Widget.BakingAppWidget;
 import com.example.a60010743.bakingpro.Widget.UpdateWidgetService;
 import com.example.a60010743.bakingpro.model.RecepieIngredients;
 import com.example.a60010743.bakingpro.model.RecepieStepDetails;
@@ -30,27 +29,25 @@ import org.json.JSONException;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static android.support.constraint.Constraints.TAG;
 
 
 public class RecepieStepsFragments extends Fragment  implements
             RecepieStepsAdapter.ListItemClickListener{
 
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.ingRecyclerView) RecyclerView resIngRecyclerview;
+    @BindView(R.id.recepieStepsRv) RecyclerView resStpRecyclerView;
     private RecepieStepsAdapter mAdapter;
     private RecyclerView.LayoutManager mStepsLayoutManager;
     private RecepieViewModel mRecepieViewModel;
-
-    private RecyclerView mRecIngView;
     private RecyclerView.Adapter mIngAdapter;
     private RecyclerView.LayoutManager mIngLayoutManager;
-    private List<RecepieStepDetails> mRecepieStepDetails;
-    private Button favButton;
+    @BindView(R.id.fav_button) Button mFavButton;
     private boolean favBtnPressed = false;
     private String mRecepieItem;
-    public static final String RECEPIE_STEP_DETAILS = "recepie_step_details";
-    public static final String RECEPIE_ITEM = "recepie_item";
-    public static final String VIEW_MODEL = "view_model";
     private List<RecepieIngredients> mRecepieIngredients;
     OnStepClickListener mCallback;
 
@@ -62,7 +59,6 @@ public class RecepieStepsFragments extends Fragment  implements
     public interface OnStepClickListener {
         void onStepClicked(int navigationIndex);
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -77,14 +73,11 @@ public class RecepieStepsFragments extends Fragment  implements
 
 
 
-    public RecepieStepsFragments() {
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.recepie_steps_fragment_layout, container, false);
+        ButterKnife.bind(this, view);
         return view;
     }
 
@@ -92,40 +85,43 @@ public class RecepieStepsFragments extends Fragment  implements
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final RecyclerView resIngRecyclerview = (RecyclerView) view.findViewById(R.id.ingRecyclerView);
-        final RecyclerView resStpRecyclerView = (RecyclerView) view.findViewById(R.id.recepieStepsRv);
-        favButton = (Button) view.findViewById(R.id.fav_button);
         Intent intent = getActivity().getIntent();
         mRecepieItem = intent.getStringExtra("recepieItem");
-        Log.d("RecepieStepsActivity", "recepieItem"+ mRecepieItem);
-
         mStepsLayoutManager = new LinearLayoutManager(getContext());
         resStpRecyclerView.setLayoutManager(mStepsLayoutManager);
         mAdapter = new RecepieStepsAdapter(getContext(), null,
                 mRecepieItem, mCallback);
         resStpRecyclerView.setAdapter(mAdapter);
-        //mAdapter.setmOnClickListener();
+
         mIngLayoutManager = new LinearLayoutManager(getContext());
         resIngRecyclerview.setLayoutManager(mIngLayoutManager);
         mRecepieViewModel = ViewModelProviders.of(this).get(RecepieViewModel.class);
 
-        mRecepieViewModel.getIngredients(mRecepieItem).observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                try {
-                    mRecepieIngredients = JsonParseUtils.parseIngData(s);
-                    mIngAdapter = new RecepieIngAdapter(getContext(),
-                            mRecepieIngredients);
-                    // List<String> ingData = convertToStringList(recepieIngredients);
+        getIngredients();
 
-                    //displayIngredients();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        getRecepieSteps();
+
+        mFavButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(favBtnPressed == false) {
+                    mRecepieViewModel.updateFavouriteRecItem(mRecepieItem, true);
+                    UpdateWidgetService.startAddWidgetData(getContext(), mRecepieIngredients,
+                                                            mRecepieItem);
+                    mFavButton.setText("Marked Fav");
+                    mFavButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                    favBtnPressed = true;
+                } else {
+                    mRecepieViewModel.updateFavouriteRecItem(mRecepieItem, false);
+                    mFavButton.setText("Mark as Fav");
+                    mFavButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    favBtnPressed = false;
                 }
-                resIngRecyclerview.setAdapter(mIngAdapter);
             }
         });
+    }
 
+    private void getRecepieSteps() {
         mRecepieViewModel.getRecepieSteps(mRecepieItem).observe(this, new Observer<String>() {
             List<RecepieStepDetails> recepieStepDetails;
             @Override
@@ -134,49 +130,29 @@ public class RecepieStepsFragments extends Fragment  implements
                     recepieStepDetails = JsonParseUtils.parseRecSteps(s);
                     mAdapter = new RecepieStepsAdapter(getContext(), recepieStepDetails,
                             mRecepieItem, mCallback);
-
                     List<RecepieStepDetails> sd = mAdapter.getDetails();
-                    for(RecepieStepDetails res : sd){
-                        Log.d("Step Details - desc", "msg"+res.getDesc());
-                        Log.d("Step Details-VURL", "msg"+res.getVideoUrl());
-                    }
-                    //displayIngredients();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 resStpRecyclerView.setAdapter(mAdapter);
-//                mAdapter.setRecepieSteps(recepieStepDetails);
-
-
             }
-
         });
+    }
 
-
-
-        favButton.setOnClickListener(new View.OnClickListener() {
+    private void getIngredients() {
+        mRecepieViewModel.getIngredients(mRecepieItem).observe(this, new Observer<String>() {
             @Override
-            public void onClick(View v) {
-                if(favBtnPressed == false) {
-                    mRecepieViewModel.updateFavouriteRecItem(mRecepieItem, true);
-                    UpdateWidgetService.startAddWidgetData(getContext(), mRecepieIngredients,
-                                                            mRecepieItem);
-                    Log.d(TAG, mRecepieItem + true + "Favourite data written to DB");
-                    favButton.setText("Marked Fav");
-                    favButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                    favBtnPressed = true;
-                } else {
-                    mRecepieViewModel.updateFavouriteRecItem(mRecepieItem, false);
-                    Log.d(TAG, mRecepieItem + false + "UnFavourite data written to DB");
-                    favButton.setText("Mark as Fav");
-                    favButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                    favBtnPressed = false;
+            public void onChanged(@Nullable String s) {
+                try {
+                    mRecepieIngredients = JsonParseUtils.parseIngData(s);
+                    mIngAdapter = new RecepieIngAdapter(getContext(),
+                            mRecepieIngredients);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
+                resIngRecyclerview.setAdapter(mIngAdapter);
             }
         });
-
-
-
     }
 
     @Override

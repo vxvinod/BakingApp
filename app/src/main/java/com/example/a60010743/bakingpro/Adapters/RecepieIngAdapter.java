@@ -27,15 +27,15 @@ public class RecepieIngAdapter extends RecyclerView.Adapter<RecepieIngAdapter.My
         public MyViewHolder(View v) {
             super(v);
             textView = (TextView) v.findViewById(R.id.recepie_ing_tv) ;
+            setIsRecyclable(false);
         }
-
-
-
     }
 
     public RecepieIngAdapter(Context context, List<RecepieIngredients> recepieIng) {
         mContext = context;
         mRecepieIng = recepieIng;
+        setHasStableIds(true);
+
     }
 
     public void setRecepieSteps(List<RecepieIngredients> recepieStepDetails) {
@@ -61,20 +61,26 @@ public class RecepieIngAdapter extends RecyclerView.Adapter<RecepieIngAdapter.My
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, RecepieDetailsActivity.class);
-                //intent.putExtra("recStpDetails",  mRecepieSteps.get(i));
                 intent.putExtra("recepieItem",  mRecepieItem);
                 intent.putExtra("navigationIndex", i);
                 mContext.startActivity(intent);
             }
         });
+        myViewHolder.setIsRecyclable(false);
     }
-
-
 
     @Override
     public int getItemCount() {
         return mRecepieIng.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 }

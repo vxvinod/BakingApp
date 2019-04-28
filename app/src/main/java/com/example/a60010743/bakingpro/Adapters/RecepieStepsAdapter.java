@@ -35,25 +35,14 @@ public class RecepieStepsAdapter extends RecyclerView.Adapter<RecepieStepsAdapte
         public TextView textView;
         public MyViewHolder(View v) {
             super(v);
-//            v.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    mOnClick
-//                }
-//            });
             textView = (TextView) v.findViewById(R.id.recepie_recycler_view_text) ;
-
+            setIsRecyclable(false);
         }
-
-
-
     }
 
     public interface ListItemClickListener {
         void onItemClick(int position);
     }
-
-
 
     public RecepieStepsAdapter(Context context, List<RecepieStepDetails> recepieSteps, String recepieItem,
                                RecepieStepsFragments.OnStepClickListener mCallback) {
@@ -61,10 +50,10 @@ public class RecepieStepsAdapter extends RecyclerView.Adapter<RecepieStepsAdapte
         mRecepieSteps = recepieSteps;
         mRecepieItem = recepieItem;
         this.mCallback = mCallback;
+        setHasStableIds(true);
     }
 
     public void setRecepieSteps(List<RecepieStepDetails> recepieStepDetails) {
-        Log.d("SETDATA", "SETTING DATA");
         mRecepieSteps = recepieStepDetails;
         notifyDataSetChanged();
     }
@@ -84,20 +73,11 @@ public class RecepieStepsAdapter extends RecyclerView.Adapter<RecepieStepsAdapte
         myViewHolder.textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(mContext, RecepieDetailsActivity.class);
-//                //intent.putExtra("recStpDetails",  mRecepieSteps.get(i));
-//                intent.putExtra("recepieItem",  mRecepieItem);
-//                intent.putExtra("navigationIndex", i);
-//                mContext.startActivity(intent);
                 mCallback.onStepClicked(i);
-                Log.d("CLICKED", "Button"+String.valueOf(i));
-
-               // mOnClickListener.onItemClick(i);
             }
         });
+        myViewHolder.setIsRecyclable(false);
     }
-
-
 
     @Override
     public int getItemCount() {
@@ -111,6 +91,16 @@ public class RecepieStepsAdapter extends RecyclerView.Adapter<RecepieStepsAdapte
 
     public void setmOnClickListener(ListItemClickListener itemClickListeener){
         this.mOnClickListener = itemClickListeener;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
 }

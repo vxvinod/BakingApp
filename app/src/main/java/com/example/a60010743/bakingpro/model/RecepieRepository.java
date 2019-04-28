@@ -21,7 +21,6 @@ public class RecepieRepository  {
         RecepieDetailsDatabase db = RecepieDetailsDatabase.getDatabase(application);
         mRecepieDao = db.recepieDao();
         mAllRecepies = mRecepieDao.getAllRecepieDetails();
-
     }
 
     LiveData<List<RecepieDetails>> getAllRecepies() {
@@ -30,7 +29,6 @@ public class RecepieRepository  {
 
     LiveData<List<String>> getAllRecepieItems() {
         mAllRecepieItems = mRecepieDao.getAllRecepieItems();
-        Log.d("RecepieRepository", String.valueOf(mAllRecepieItems));
         return mAllRecepieItems;
     }
 
@@ -54,7 +52,6 @@ public class RecepieRepository  {
     }
 
     public void updateFavouriteRecItem(String recItem, boolean fav) {
-       // Map<String, List<String>> updateDetails = new HashMap<String, List<String>>();
         UpdateDetails updateDb = new UpdateDetails(recItem, fav);
         new updateAsyncTask(mRecepieDao).execute(updateDb);
     }
@@ -62,7 +59,6 @@ public class RecepieRepository  {
     public static class insertAsyncTask extends AsyncTask<RecepieDetails, Void, Void>{
 
         private RecepieDao mRecepieDao;
-
         insertAsyncTask(RecepieDao recepieDao) {
             mRecepieDao = recepieDao;
         }
@@ -77,7 +73,6 @@ public class RecepieRepository  {
     public static class updateAsyncTask extends AsyncTask<UpdateDetails, Void, Void>{
 
         private RecepieDao mRecepieDao;
-
         updateAsyncTask(RecepieDao recepieDao) {
             mRecepieDao = recepieDao;
         }

@@ -22,7 +22,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/ingRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="175dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -40,7 +40,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recepieStepsRv"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="318dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:overScrollMode="never"

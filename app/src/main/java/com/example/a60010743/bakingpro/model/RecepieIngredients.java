@@ -17,20 +17,6 @@ public class RecepieIngredients implements Parcelable{
         this.measure = measure;
     }
 
-    public RecepieIngredients() {}
-
-    public static final Parcelable.Creator<RecepieIngredients> CREATOR = new Creator<RecepieIngredients>() {
-        @Override
-        public RecepieIngredients createFromParcel(Parcel in) {
-            return new RecepieIngredients(in);
-        }
-
-        @Override
-        public RecepieIngredients[] newArray(int size) {
-            return new RecepieIngredients[size];
-        }
-    };
-
     public String getIngredients() {
         return ingredients;
     }
@@ -72,6 +58,17 @@ public class RecepieIngredients implements Parcelable{
         dest.writeString(quantity);
         dest.writeString(measure);
     }
+    public static final Parcelable.Creator<RecepieIngredients> CREATOR = new Creator<RecepieIngredients>() {
+        @Override
+        public RecepieIngredients createFromParcel(Parcel in) {
+            return new RecepieIngredients(in);
+        }
+
+        @Override
+        public RecepieIngredients[] newArray(int size) {
+            return new RecepieIngredients[size];
+        }
+    };
 
 
 }

@@ -1,56 +1,20 @@
 package com.example.a60010743.bakingpro;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
-import android.widget.Adapter;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.example.a60010743.bakingpro.Adapters.RecepieIngAdapter;
-import com.example.a60010743.bakingpro.Adapters.RecepieStepsAdapter;
 import com.example.a60010743.bakingpro.Fragments.RecepieDetailsFragments;
 import com.example.a60010743.bakingpro.Fragments.RecepieStepsFragments;
-import com.example.a60010743.bakingpro.Utilities.JsonParseUtils;
-import com.example.a60010743.bakingpro.model.RecepieIngredients;
-import com.example.a60010743.bakingpro.model.RecepieStepDetails;
 import com.example.a60010743.bakingpro.model.RecepieViewModel;
-
-import org.json.JSONException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class RecepieStepsActivity extends AppCompatActivity implements
         RecepieStepsFragments.OnStepClickListener{
 
     private final String TAG = "RecepieStepsActivity";
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mStepsLayoutManager;
     private RecepieViewModel mRecepieViewModel;
-
-    private RecyclerView mRecIngView;
-    private RecyclerView.Adapter mIngAdapter;
-    private RecyclerView.LayoutManager mIngLayoutManager;
-    private List<RecepieStepDetails> mRecepieStepDetails;
-    private Button favButton;
     private String mRecepieItem;
-    private boolean favBtnPressed = false;
     private RecepieStepsFragments mRecepieStepsFragments;
     private boolean mTwoPane = false;
 
@@ -59,85 +23,40 @@ public class RecepieStepsActivity extends AppCompatActivity implements
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recepie_steps);
-        mTwoPane = getIntent().getExtras().getBoolean("twoPane");
-        mRecepieItem = getIntent().getStringExtra("recepieItem");
+        mTwoPane = getIntent().getExtras().getBoolean(getString(R.string.twoPane));
+        mRecepieItem = getIntent().getStringExtra(getString(R.string.recepieItem));
         if(mTwoPane == true) {
-//            RecepieStepsFragments recepieStepsFragments = new RecepieStepsFragments();
-//            recepieStepsFragments.setRecepieItem(mRecepieItem);
-//
-//            FragmentManager fragmentManager = getSupportFragmentManager();
-//            fragmentManager.beginTransaction()
-//                    .add(R.id.recepie_steps_fragment_container, recepieStepsFragments)
-//                    .commit();
-
+            // MasterView Layout
             RecepieDetailsFragments recepieDetailsFragments = new RecepieDetailsFragments();
             recepieDetailsFragments.setRecepieItem(mRecepieItem);
-            recepieDetailsFragments.setNavigationIndex(getIntent().getIntExtra("navigationIndex",1));
+            recepieDetailsFragments.setNavigationIndex(getIntent().
+                    getIntExtra(getString(R.string.navigationIndex),1));
             FragmentManager detailsFragmentManager = getSupportFragmentManager();
             detailsFragmentManager.beginTransaction()
                     .add(R.id.recepie_details_fragment_container, recepieDetailsFragments)
                     .commit();
             } else {
+            // Mobile View
             mRecepieStepsFragments = new RecepieStepsFragments();
             Intent intent = getIntent();
+            mRecepieItem = intent.getStringExtra(getString(R.string.recepieItem));
 
-            mRecepieItem = intent.getStringExtra("recepieItem");
             mRecepieStepsFragments.setRecepieItem(mRecepieItem);
-
             mRecepieViewModel = ViewModelProviders.of(this).get(RecepieViewModel.class);
             mRecepieStepsFragments.setRecepieViewModel(mRecepieViewModel);
 
+            // Initiate Recepie Step Fragment container
             FragmentManager fragmentManager = getSupportFragmentManager();
-
             fragmentManager.beginTransaction()
                     .add(R.id.recepie_steps_fragment_container, mRecepieStepsFragments)
                     .commit();
         }
     }
 
-
-//    public String displayIngredients() {
-//        String ingDisplay = "";
-//        for(RecepieIngredients rec: mRecepieIngredients) {
-//            ingDisplay = ingDisplay + rec.getIngredients()+": "+rec.getQuantity()+" "+rec.getMeasure()+"\n";
-////            Log.d(TAG, "Ing"+ rec.getIngredients());
-////            Log.d(TAG, "Quantity"+ rec.getQuantity());
-////            Log.d(TAG, "Measure"+ rec.getMeasure());
-//        }
-//        Log.d(TAG, "Final String "+ ingDisplay);
-//        return ingDisplay;
-//    }
-
-    public List<String> convertToStringList(List<RecepieIngredients> recepieIngredients) {
-        List<String> ingData = new ArrayList<>();
-        for(RecepieIngredients rec: recepieIngredients) {
-            String ingredient = rec.getIngredients()+":  "+rec.getQuantity()+" "+rec.getMeasure();
-            ingData.add(ingredient);
-//            Log.d(TAG, "Ing"+ rec.getIngredients());
-//            Log.d(TAG, "Quantity"+ rec.getQuantity());
-//            Log.d(TAG, "Measure"+ rec.getMeasure());
-        }
-
-        return ingData;
-
-    }
-
-
     @Override
     public void onStepClicked(int navigationIndex) {
-
-        Toast.makeText(this, "HHH clicked ="+ navigationIndex, Toast.LENGTH_SHORT).show();
         if(mTwoPane) {
-              Log.d("TWOPANE", "RECEPIEITEM"+mRecepieItem);
-              Log.d("NAVIGATIONINDEX", "NAVIGATIONINDESX"+navigationIndex);
-//            RecepieStepsFragments recepieStepsFragments = new RecepieStepsFragments();
-//            recepieStepsFragments.setRecepieItem(mRecepieItem);
-//
-//            FragmentManager fragmentManager = getSupportFragmentManager();
-//            fragmentManager.beginTransaction()
-//                    .add(R.id.recepie_steps_fragment_container, recepieStepsFragments)
-//                    .commit();
-
+            // Update RecepieDetails fragment in MasterView Layout.
             RecepieDetailsFragments recepieDetailsFragments = new RecepieDetailsFragments();
             recepieDetailsFragments.setRecepieItem(mRecepieItem);
             recepieDetailsFragments.setNavigationIndex(navigationIndex);
@@ -146,17 +65,13 @@ public class RecepieStepsActivity extends AppCompatActivity implements
                     .replace(R.id.recepie_details_fragment_container, recepieDetailsFragments)
                     .commit();
         } else {
-            Log.d("ONEPANE", "RECEPIEITEM"+mRecepieItem);
-            Log.d("NAVIGATIONINDEX", "NAVIGATIONINDESX"+navigationIndex);
-
+            // Initiate Recepie Details Activity for Mobile view
             Bundle b = new Bundle();
-            b.putInt("navigationIndex", navigationIndex);
-            b.putString("recepieItem", mRecepieItem);
-
+            b.putInt(getString(R.string.navigationIndex), navigationIndex);
+            b.putString(getString(R.string.recepieItem), mRecepieItem);
             final Intent intent = new Intent(this, RecepieDetailsActivity.class);
             intent.putExtras(b);
             this.startActivity(intent);
         }
-
     }
 }

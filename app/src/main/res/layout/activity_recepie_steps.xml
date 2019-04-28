@@ -8,7 +8,7 @@
     tools:context=".RecepieStepsActivity">
 
     <fragment
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/recepie_steps_fragment_container"
         android:name="com.example.a60010743.bakingpro.Fragments.RecepieStepsFragments"

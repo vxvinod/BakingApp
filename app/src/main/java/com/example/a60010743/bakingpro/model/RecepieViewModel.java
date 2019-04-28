@@ -18,7 +18,6 @@ public class RecepieViewModel extends AndroidViewModel {
         super(application);
         mRepository = new RecepieRepository(application);
         mAllRecepies = mRepository.getAllRecepies();
-
     }
 
     public void insert(RecepieDetails recepieDetails) {
@@ -30,14 +29,11 @@ public class RecepieViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<String>> getmAllRecepieItems() {
-        //if(mAllRecepieItems == null) return null;
         mAllRecepieItems = mRepository.getAllRecepieItems();
         return mAllRecepieItems;
-
     }
 
     public LiveData<String> getIngredients(String recepieItem) {
-        //if(mAllRecepieItems == null) return null;
         LiveData<String> recepieIng = mRepository.getRecepieIng(recepieItem);
         return recepieIng;
     }

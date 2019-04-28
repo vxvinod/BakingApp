@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.a60010743.bakingpro.R;
-import com.example.a60010743.bakingpro.RecepieDetailsActivity;
 import com.example.a60010743.bakingpro.Utilities.JsonParseUtils;
 import com.example.a60010743.bakingpro.model.RecepieStepDetails;
 import com.example.a60010743.bakingpro.model.RecepieViewModel;
@@ -38,7 +37,11 @@ import org.json.JSONException;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class RecepieDetailsFragments extends Fragment {
+
 
     private TextView mTextMessage;
     private TextView mDescription;
@@ -64,6 +67,7 @@ public class RecepieDetailsFragments extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.recepie_detail_fragment_layout, container, false);
+       // ButterKnife.bind(this, view);
         return view;
     }
 
@@ -71,22 +75,16 @@ public class RecepieDetailsFragments extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         componentListener = new RecepieDetailsFragments.ComponentListener();
-
-
-
         mTextMessage = (TextView) view.findViewById(R.id.message);
         mPlayerView = (PlayerView) view.findViewById(R.id.detail_video_view);
         mDescription = (TextView) view.findViewById(R.id.description);
         mShortDesc   = (TextView) view.findViewById(R.id.shortDesc);
-        BottomNavigationView navigation = (BottomNavigationView) view.findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        BottomNavigationView mNavigation = (BottomNavigationView) view.findViewById(R.id.navigation);
+        mNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-
-        //String mRecepieItem = getIntent().getStringExtra("recepieItem");
-        //final int mNavigationIndex = getIntent().getIntExtra("navigationIndex",0);
-        Log.d("Test", "recepieITem--"+mRecepieItem);
-        Log.d("Test", "NavigationIndex----"+mNavigationIndex);
         mRecepieViewModel = ViewModelProviders.of(this).get(RecepieViewModel.class);
+
+        // Fetch Recepie Details from DB and Set in UI.
         mRecepieViewModel.getRecepieSteps(mRecepieItem).observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
@@ -98,12 +96,9 @@ public class RecepieDetailsFragments extends Fragment {
                     String videoUrl = mRecepieStepDetails.getVideoUrl();
                     String thumbnailUrl = mRecepieStepDetails.getThumbnailUrl();
                     setUpPlayer(videoUrl, thumbnailUrl);
-                    //displayIngredients();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
             }
 
         });
@@ -131,9 +126,6 @@ public class RecepieDetailsFragments extends Fragment {
                     mShortDesc.setText(mRecepieStepDetails.getShortDesc());
                     setUpPlayer(mRecepieStepDetails.getVideoUrl(), mRecepieStepDetails.getThumbnailUrl());
                     return true;
-                case R.id.navigation_dashboard:
-                    //onBackPressed();
-                    return true;
                 case R.id.navigation_next:
                     if(mNavigationIndex == mRecepieStepDetailsList.size()) return true;
                     mNavigationIndex = mNavigationIndex + 1;
@@ -146,19 +138,17 @@ public class RecepieDetailsFragments extends Fragment {
             return false;
         }
     };
+
     public void setUpPlayer(String videoUrl, String thumbnailUrl) {
         if (videoUrl.isEmpty() || videoUrl.equals("") || videoUrl == null) {
             if (thumbnailUrl.isEmpty() || thumbnailUrl.equals("") || thumbnailUrl == null) {
-
                 return;
             } else {
-                Log.d("Test", "IndideThumbnail" + thumbnailUrl.toString());
                 Uri uri = Uri.parse(mRecepieStepDetails.getThumbnailUrl());
                 MediaSource mediaSource = buildMediaSource(uri);
                 mPlayer.prepare(mediaSource, true, false);
             }
         } else {
-            Log.d("Test", "IndideVideo" + videoUrl.toString());
             Uri uri = Uri.parse(mRecepieStepDetails.getVideoUrl());
             MediaSource mediaSource = buildMediaSource(uri);
             mPlayer.prepare(mediaSource, true, false);
@@ -172,7 +162,6 @@ public class RecepieDetailsFragments extends Fragment {
             TrackSelection.Factory adaptiveTrackSelectionFactory =
                     new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
 
-
             mPlayer = ExoPlayerFactory.newSimpleInstance(
                     new DefaultRenderersFactory(getContext()),
                     new DefaultTrackSelector(adaptiveTrackSelectionFactory), new DefaultLoadControl());
@@ -182,26 +171,21 @@ public class RecepieDetailsFragments extends Fragment {
             mPlayer.setPlayWhenReady(mPlayWhenReady);
             mPlayer.seekTo(mCurrentWindow, mPlayBackPosition);
 
-            //Uri uri = Uri.parse("https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffd974_-intro-creampie/-intro-creampie.mp4");
             if(mRecepieStepDetails != null) {
                 videoUrl = mRecepieStepDetails.getVideoUrl().toString();
                 thumbnailUrl = mRecepieStepDetails.getThumbnailUrl().toString();
             }
 
             if (videoUrl != null) {
-
                 if (videoUrl.isEmpty() || videoUrl.equals("") || videoUrl == null) {
                     if (thumbnailUrl.isEmpty() || thumbnailUrl.equals("") || thumbnailUrl == null) {
-
                         return;
                     } else {
-                        Log.d("Test", "IndideThumbnail" + thumbnailUrl.toString());
                         Uri uri = Uri.parse(mRecepieStepDetails.getThumbnailUrl());
                         MediaSource mediaSource = buildMediaSource(uri);
                         mPlayer.prepare(mediaSource, true, false);
                     }
                 } else {
-                    Log.d("Test", "IndideVideo" + videoUrl.toString());
                     Uri uri = Uri.parse(mRecepieStepDetails.getVideoUrl());
                     MediaSource mediaSource = buildMediaSource(uri);
                     mPlayer.prepare(mediaSource, true, false);
@@ -212,7 +196,7 @@ public class RecepieDetailsFragments extends Fragment {
 
     private MediaSource buildMediaSource(Uri uri) {
         return new ExtractorMediaSource.Factory(
-                new DefaultHttpDataSourceFactory("exoplayer")).
+                new DefaultHttpDataSourceFactory(getString(R.string.exoPlayer))).
                 createMediaSource(uri);
     }
 
@@ -282,10 +266,7 @@ public class RecepieDetailsFragments extends Fragment {
                 default:
                     stateString = "UNKNOWN_STATE";
                     break;
-
             }
-            Log.d("Player", "Changed state to" + stateString +
-                    "playWhenReady" + playWhenReady);
         }
     }
 }

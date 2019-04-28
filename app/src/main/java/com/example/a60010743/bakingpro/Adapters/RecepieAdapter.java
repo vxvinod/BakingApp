@@ -13,13 +13,11 @@ import java.util.List;
 
 public class RecepieAdapter extends BaseAdapter {
     private Context mContext;
-    //private List<String> mRecepieNames;
     private List<String> mRecepieNames;
 
     public RecepieAdapter(Context context, List<String> recepieNames) {
         mContext = context;
         mRecepieNames = recepieNames;
-        //final List<String> mRecepieNames = new ArrayList<String>(Arrays.asList(recepieNames));
     }
 
     @Override
@@ -49,7 +47,6 @@ public class RecepieAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) mContext
                                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
-            gridView = new View(mContext);
             gridView = inflater.inflate(R.layout.grid_view_layout, null);
             TextView tv = (TextView) gridView.findViewById(R.id.recepie_item_gridview);
             tv.setText(mRecepieNames.get(position));
@@ -58,11 +55,4 @@ public class RecepieAdapter extends BaseAdapter {
         }
         return gridView;
     }
-//    // Method for converting DP value to pixels
-//    public static int getPixelsFromDPs(Activity activity, int dps){
-//        Resources r = activity.getResources();
-//        int  px = (int) (TypedValue.applyDimension(
-//                TypedValue.COMPLEX_UNIT_DIP, dps, r.getDisplayMetrics()));
-//        return px;
-//    }
 }

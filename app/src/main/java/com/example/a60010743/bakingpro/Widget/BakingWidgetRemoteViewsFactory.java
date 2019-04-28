@@ -44,11 +44,7 @@ public class BakingWidgetRemoteViewsFactory implements RemoteViewsService.Remote
     }
 
     @Override
-    public void onCreate() {
-
-
-
-    }
+    public void onCreate() { }
 
     @Override
     public void onDataSetChanged() {
@@ -56,13 +52,6 @@ public class BakingWidgetRemoteViewsFactory implements RemoteViewsService.Remote
         mRecepieName = BakingAppWidget.mRecepieName;
 
         final long identityToken = Binder.clearCallingIdentity();
-//        mFavRecepieDetails.clear();
-//        mFavRecepieDetails.add("Test1");
-//        mFavRecepieDetails.add("Test2");
-//        mFavRecepieDetails.add("Test3");
-//        for(String res:mFavRecepieDetails){
-//            Log.d("WidgetTEXT-", res);
-//        }
         Binder.restoreCallingIdentity(identityToken);
     }
 
@@ -84,10 +73,8 @@ public class BakingWidgetRemoteViewsFactory implements RemoteViewsService.Remote
             return null;
         }
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.collection_widget_list_item);
-        //rv.setTextViewText(R.id.widgetItemTaskNameLabel, mFavRecepieDetails.get(0));
         String ing = mIngredients.get(position).getIngredients()+" "+ mIngredients.get(position).getQuantity()+
                                     " "+ mIngredients.get(position).getMeasure();
-        Log.d("INGDATA", ing);
         rv.setTextViewText(R.id.widgetItemTaskNameLabel, ing);
         return rv;
     }

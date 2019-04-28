@@ -1,10 +1,7 @@
 package com.example.a60010743.bakingpro.model;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 @Entity(tableName = "recepie_details_table")
@@ -16,6 +13,7 @@ public class RecepieDetails  {
     private String recepieSteps;
     private boolean favourite;
 
+    // Constructor
     public RecepieDetails(String recepieItem, String recepieIng, String recepieSteps) {
         this.recepieItem = recepieItem;
         this.recepieIng = recepieIng;
@@ -56,8 +54,5 @@ public class RecepieDetails  {
     public void setRecepieSteps(String recepieSteps) {
         this.recepieSteps = recepieSteps;
     }
-
-
-
 
 }

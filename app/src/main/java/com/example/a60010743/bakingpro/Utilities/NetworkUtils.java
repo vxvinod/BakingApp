@@ -18,6 +18,7 @@ public class NetworkUtils {
     final static String PATH = "topher/2017/May/59121517_baking/";
     final static String RESPONSE_FORMAT = "baking.json";
 
+    // Build URL to fetch
     public static URL buildUrl() {
         Uri buildUrl = Uri.parse(RECEPIE_BASE_URL).buildUpon()
                             .appendEncodedPath(PATH)
@@ -29,18 +30,16 @@ public class NetworkUtils {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        Log.d(TAG_NAME, "Url---" + url);
         return url;
     }
 
+    // Fetch data from API
     public static String fetchData(URL buildUrl) throws IOException{
         HttpURLConnection urlConnection = (HttpURLConnection) buildUrl.openConnection();
         try {
             InputStream in = urlConnection.getInputStream();
-
             Scanner scanner = new Scanner(in);
             scanner.useDelimiter("\\A");
-
             boolean hasInput = scanner.hasNext();
             if (hasInput) {
                 return scanner.next();
@@ -50,8 +49,5 @@ public class NetworkUtils {
         } finally {
             urlConnection.disconnect();
         }
-
     }
-
-
 }
