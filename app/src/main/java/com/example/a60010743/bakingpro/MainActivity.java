@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        final GridView recepieGridView = (GridView) findViewById(R.id.baking_grid_view);
         // Build Url
 
 //        RecepieDetailsDatabase database = Room.databaseBuilder(this, RecepieDetailsDatabase.class, "db-contacts")
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Fetch Data from URL - NEED TO HANDLE ??
-        //new fetchData().execute();
+        new fetchData().execute();
         // Store fetched data in DB
         if(findViewById(R.id.tab_layout_container) != null) {
             mTwoPane = true;
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mRecepieViewModel = ViewModelProviders.of(this).get(RecepieViewModel.class);
-        final GridView recepieGridView = (GridView) findViewById(R.id.baking_grid_view);
+
 //        Log.d(TAG_NAME, "RecepieItems-----"+ mRecepieViewModel.getmAllRecepieItems());
         //recepieNames = mRecepieViewModel.getmAllRecepieItems();
 

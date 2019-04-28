@@ -1,6 +1,7 @@
 package com.example.a60010743.bakingpro;
 
 import android.support.annotation.NonNull;
+import android.support.test.espresso.Espresso;
 import android.support.test.espresso.core.internal.deps.guava.base.Preconditions;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.espresso.matcher.CursorMatchers;
@@ -19,6 +20,8 @@ import static android.support.test.espresso.Espresso.onView;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +44,10 @@ public class MainActivityUITest {
     public ActivityTestRule<MainActivity> mainActivityActivityTestRule
             = new ActivityTestRule<>(MainActivity.class);
 
+    public static RecyclerViewMatcher withRecyclerView(final int recyclerViewId) {
+        return new RecyclerViewMatcher(recyclerViewId);
+    }
+
     @Test
     public void testRecipeListText(){
         String[] items = {"Brownies", "Cheesecake", "Nutella Pie", "Yellow Cake"};
@@ -54,30 +61,10 @@ public class MainActivityUITest {
     public void testRecepieStepNavigation(){
         onData(anything()).inAdapterView(withId(R.id.baking_grid_view)).atPosition(0).
                 onChildView(withId(R.id.recepie_item_gridview)).perform(click());
+        onView(withRecyclerView(R.id.recepieStepsRv).atPosition(1))
+                .check(matches(isDisplayed()));
     }
 
-
-    //helper methods
-    public static Matcher<View> atPosition(final int position, @NonNull final Matcher<View> itemMatcher) {
-        Preconditions.checkNotNull(itemMatcher);
-        return new BoundedMatcher<View, RecyclerView>(RecyclerView.class) {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("has item at position " + position + ": ");
-                itemMatcher.describeTo(description);
-            }
-
-            @Override
-            protected boolean matchesSafely(final RecyclerView view) {
-                RecyclerView.ViewHolder viewHolder = view.findViewHolderForAdapterPosition(position);
-                if (viewHolder == null) {
-                    // has no item on such position
-                    return false;
-                }
-                return itemMatcher.matches(viewHolder.itemView);
-            }
-        };
-    }
 
 
 }
