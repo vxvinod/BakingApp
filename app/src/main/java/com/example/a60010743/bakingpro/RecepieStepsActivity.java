@@ -74,4 +74,11 @@ public class RecepieStepsActivity extends AppCompatActivity implements
             this.startActivity(intent);
         }
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(getString(R.string.twoPane), mTwoPane);
+        outState.putString(getString(R.string.recepieItem), mRecepieItem);
+        super.onSaveInstanceState(outState);
+    }
 }

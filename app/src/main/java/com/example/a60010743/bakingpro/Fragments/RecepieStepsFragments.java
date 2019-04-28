@@ -86,7 +86,11 @@ public class RecepieStepsFragments extends Fragment  implements
         super.onViewCreated(view, savedInstanceState);
 
         Intent intent = getActivity().getIntent();
-        mRecepieItem = intent.getStringExtra("recepieItem");
+        if(savedInstanceState == null) {
+            mRecepieItem = intent.getStringExtra("recepieItem");
+        } else {
+            mRecepieItem = savedInstanceState.getString("recepieItem");
+        }
         mStepsLayoutManager = new LinearLayoutManager(getContext());
         resStpRecyclerView.setLayoutManager(mStepsLayoutManager);
         mAdapter = new RecepieStepsAdapter(getContext(), null,
@@ -155,10 +159,12 @@ public class RecepieStepsFragments extends Fragment  implements
         });
     }
 
+
+
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        // Will Take care later....
-       // outState.putStringArrayList(RECEPIE_STEP_DETAILS, List<RecepieStepDetails> mRecepieStepDetails);
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString("recepieItem", mRecepieItem);
+        super.onSaveInstanceState(outState);
     }
 
     public void setRecepieStepDetails(List<RecepieStepDetails> recepieStepDetails) {

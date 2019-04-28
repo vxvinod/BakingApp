@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         final RecepieAdapter adapter = new RecepieAdapter(this, null);
 
         // Fetch Data from URL - NEED TO HANDLE ??
-        // new fetchData().execute();
+        new fetchData().execute();
 
         // Handle view of Tab and mobile phone
         twoPane = (findViewById(R.id.tab_layout_container) != null) ? true : false;
