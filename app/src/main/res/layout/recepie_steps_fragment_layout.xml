@@ -7,7 +7,7 @@
     tools:context=".RecepieStepsActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/ing_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -16,11 +16,11 @@
         android:text="Ingredients:"
         android:textSize="24dp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/IngRecyclerView"
+        app:layout_constraintStart_toStartOf="@+id/ingRecyclerView"
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/IngRecyclerView"
+        android:id="@+id/ingRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginEnd="8dp"
@@ -35,7 +35,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/ing_tv" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recepieStepsRv"
@@ -48,7 +48,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/IngRecyclerView"></android.support.v7.widget.RecyclerView>
+        app:layout_constraintTop_toBottomOf="@+id/ingRecyclerView"></android.support.v7.widget.RecyclerView>
 
     <Button
         android:id="@+id/fav_button"
@@ -56,8 +56,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="Mark As Fav"
-        app:layout_constraintBottom_toBottomOf="@+id/textView"
-        app:layout_constraintStart_toEndOf="@+id/textView" />
+        app:layout_constraintBottom_toBottomOf="@+id/ing_tv"
+        app:layout_constraintStart_toEndOf="@+id/ing_tv" />
 
 
 </android.support.constraint.ConstraintLayout>

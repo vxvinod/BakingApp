@@ -1,69 +1,29 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#09C"
-    android:padding="@dimen/widget_margin">
-
-
-    <LinearLayout
-        android:id="@+id/section_id"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:orientation="horizontal"
-        style="@style/AppWidgetSection">
-
-        <TextView
-            android:id="@+id/appwidget_id_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text="Widget ID"
-            style="@style/AppWidgetLabel"
-         />
-
-        <TextView
-            android:id="@+id/appwidget_id"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="XX"
-            style="@style/AppWidgetText"
-            />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/section_update"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/section_id"
-        android:orientation="vertical"
-        style="@style/AppWidgetSection">
-
-        <TextView
-            android:id="@+id/appwidget_update"
+    android:background="@color/colorWhite"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+    <FrameLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView android:layout_width="match_parent"
+            android:id="@+id/widgetTitleLabel"
+            android:text="R"
+            android:textColor="@color/colorWhite"
+            android:background="@color/colorPrimary"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:layout_height="50dp"></TextView>
+    </FrameLayout>
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ListView android:id="@+id/widgetListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="XX"
-            style="@style/AppWidgetText"
-            />
-        <TextView
-            android:id="@+id/appwidget_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="XX"
-            style="@style/AppWidgetText"
-            />
-
-
+            android:background="@color/colorWhite"
+            android:dividerHeight="1dp"
+            android:divider="#eeeeee"
+            tools:listitem="@layout/collection_widget_list_item"></ListView>
     </LinearLayout>
-
-
-
-</RelativeLayout>
+</LinearLayout>

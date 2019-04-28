@@ -1,6 +1,11 @@
 package com.example.a60010743.bakingpro.model;
 
-public class RecepieIngredients {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.List;
+
+public class RecepieIngredients implements Parcelable{
 
     private String ingredients;
     private String quantity;
@@ -11,6 +16,20 @@ public class RecepieIngredients {
         this.quantity = quantity;
         this.measure = measure;
     }
+
+    public RecepieIngredients() {}
+
+    public static final Parcelable.Creator<RecepieIngredients> CREATOR = new Creator<RecepieIngredients>() {
+        @Override
+        public RecepieIngredients createFromParcel(Parcel in) {
+            return new RecepieIngredients(in);
+        }
+
+        @Override
+        public RecepieIngredients[] newArray(int size) {
+            return new RecepieIngredients[size];
+        }
+    };
 
     public String getIngredients() {
         return ingredients;
@@ -35,4 +54,26 @@ public class RecepieIngredients {
     public void setMeasure(String measure) {
         this.measure = measure;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public RecepieIngredients(Parcel in) {
+        this.ingredients = in.readString();
+        this.quantity = in.readString();
+        this.measure = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(ingredients);
+        dest.writeString(quantity);
+        dest.writeString(measure);
+    }
+
+
 }
+
+

@@ -4,7 +4,9 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.persistence.room.Room;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,7 +23,9 @@ import android.widget.TextView;
 import com.example.a60010743.bakingpro.Adapters.RecepieAdapter;
 import com.example.a60010743.bakingpro.Utilities.JsonParseUtils;
 import com.example.a60010743.bakingpro.Utilities.NetworkUtils;
+import com.example.a60010743.bakingpro.model.RecepieDao;
 import com.example.a60010743.bakingpro.model.RecepieDetails;
+import com.example.a60010743.bakingpro.model.RecepieDetailsDatabase;
 import com.example.a60010743.bakingpro.model.RecepieViewModel;
 
 import org.json.JSONException;
@@ -45,8 +49,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // Build Url
 
+//        RecepieDetailsDatabase database = Room.databaseBuilder(this, RecepieDetailsDatabase.class, "db-contacts")
+//                .allowMainThreadQueries()   //Allows room to do operation on main thread
+//                .build();
+//        RecepieDao recepieDao = database.recepieDao();
+//        Log.d(TAG_NAME,"DB--"+ String.valueOf(recepieDao));
+
+
+
         // Fetch Data from URL - NEED TO HANDLE ??
-        // new fetchData().execute();
+        //new fetchData().execute();
         // Store fetched data in DB
         if(findViewById(R.id.tab_layout_container) != null) {
             mTwoPane = true;
@@ -69,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
                 adapter.setRecepieItems(strings);
             }
         });
+
+
 
         recepieGridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override

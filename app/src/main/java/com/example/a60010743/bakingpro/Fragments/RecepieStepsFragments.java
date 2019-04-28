@@ -1,12 +1,10 @@
 package com.example.a60010743.bakingpro.Fragments;
 
-import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.service.carrier.CarrierMessagingService;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,13 +20,14 @@ import com.example.a60010743.bakingpro.Adapters.RecepieIngAdapter;
 import com.example.a60010743.bakingpro.Adapters.RecepieStepsAdapter;
 import com.example.a60010743.bakingpro.R;
 import com.example.a60010743.bakingpro.Utilities.JsonParseUtils;
+import com.example.a60010743.bakingpro.Widget.BakingAppWidget;
+import com.example.a60010743.bakingpro.Widget.UpdateWidgetService;
 import com.example.a60010743.bakingpro.model.RecepieIngredients;
 import com.example.a60010743.bakingpro.model.RecepieStepDetails;
 import com.example.a60010743.bakingpro.model.RecepieViewModel;
 
 import org.json.JSONException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static android.support.constraint.Constraints.TAG;
@@ -52,7 +51,7 @@ public class RecepieStepsFragments extends Fragment  implements
     public static final String RECEPIE_STEP_DETAILS = "recepie_step_details";
     public static final String RECEPIE_ITEM = "recepie_item";
     public static final String VIEW_MODEL = "view_model";
-
+    private List<RecepieIngredients> mRecepieIngredients;
     OnStepClickListener mCallback;
 
     @Override
@@ -93,7 +92,7 @@ public class RecepieStepsFragments extends Fragment  implements
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final RecyclerView resIngRecyclerview = (RecyclerView) view.findViewById(R.id.IngRecyclerView);
+        final RecyclerView resIngRecyclerview = (RecyclerView) view.findViewById(R.id.ingRecyclerView);
         final RecyclerView resStpRecyclerView = (RecyclerView) view.findViewById(R.id.recepieStepsRv);
         favButton = (Button) view.findViewById(R.id.fav_button);
         Intent intent = getActivity().getIntent();
@@ -113,11 +112,10 @@ public class RecepieStepsFragments extends Fragment  implements
         mRecepieViewModel.getIngredients(mRecepieItem).observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                List<RecepieIngredients> recepieIngredients;
                 try {
-                    recepieIngredients = JsonParseUtils.parseIngData(s);
+                    mRecepieIngredients = JsonParseUtils.parseIngData(s);
                     mIngAdapter = new RecepieIngAdapter(getContext(),
-                            recepieIngredients);
+                            mRecepieIngredients);
                     // List<String> ingData = convertToStringList(recepieIngredients);
 
                     //displayIngredients();
@@ -154,11 +152,15 @@ public class RecepieStepsFragments extends Fragment  implements
 
         });
 
+
+
         favButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(favBtnPressed == false) {
                     mRecepieViewModel.updateFavouriteRecItem(mRecepieItem, true);
+                    UpdateWidgetService.startAddWidgetData(getContext(), mRecepieIngredients,
+                                                            mRecepieItem);
                     Log.d(TAG, mRecepieItem + true + "Favourite data written to DB");
                     favButton.setText("Marked Fav");
                     favButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));

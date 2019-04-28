@@ -2,11 +2,15 @@ package com.example.a60010743.bakingpro;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static org.junit.Assert.*;
 
 /**
@@ -23,4 +27,6 @@ public class ExampleInstrumentedTest {
 
         assertEquals("com.example.a60010743.bakingpro", appContext.getPackageName());
     }
+
+
 }

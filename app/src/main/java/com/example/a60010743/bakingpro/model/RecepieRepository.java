@@ -2,6 +2,7 @@ package com.example.a60010743.bakingpro.model;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -16,7 +17,7 @@ public class RecepieRepository  {
     private LiveData<List<RecepieDetails>> mAllRecepies;
     private LiveData<List<String>> mAllRecepieItems;
 
-    RecepieRepository(Application application) {
+    public RecepieRepository(Context application) {
         RecepieDetailsDatabase db = RecepieDetailsDatabase.getDatabase(application);
         mRecepieDao = db.recepieDao();
         mAllRecepies = mRecepieDao.getAllRecepieDetails();

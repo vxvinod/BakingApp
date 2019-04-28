@@ -1,29 +1,14 @@
 package com.example.a60010743.bakingpro.Adapters;
 
-import android.app.Activity;
-import android.arch.lifecycle.LiveData;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.a60010743.bakingpro.MainActivity;
 import com.example.a60010743.bakingpro.R;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class RecepieAdapter extends BaseAdapter {
@@ -66,7 +51,7 @@ public class RecepieAdapter extends BaseAdapter {
         if (convertView == null) {
             gridView = new View(mContext);
             gridView = inflater.inflate(R.layout.grid_view_layout, null);
-            TextView tv = (TextView) gridView.findViewById(R.id.android_gridview_text);
+            TextView tv = (TextView) gridView.findViewById(R.id.recepie_item_gridview);
             tv.setText(mRecepieNames.get(position));
         } else {
             gridView = (View) convertView;
