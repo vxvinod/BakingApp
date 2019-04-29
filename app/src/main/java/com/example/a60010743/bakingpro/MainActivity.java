@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         final boolean twoPane;
         mRecepieViewModel = ViewModelProviders.of(this).get(RecepieViewModel.class);
         final RecepieAdapter adapter = new RecepieAdapter(this, null);
+        mRecepieGridView.setAdapter(adapter);
 
         // Fetch Data from URL - NEED TO HANDLE ??
         new fetchData().execute();
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle view of Tab and mobile phone
         twoPane = (findViewById(R.id.tab_layout_container) != null) ? true : false;
 
-        mRecepieGridView.setAdapter(adapter);
+
 
         getAllRecepies(adapter);
 
@@ -112,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
             for(RecepieDetails res:recepieCollections) {
                 RecepieDetails recepieDetails = new RecepieDetails(res.getRecepieItem(),
                                                     res.getRecepieIng(), res.getRecepieSteps());
+                Log.d("CHECKTT", recepieDetails.getRecepieItem());
                 mRecepieViewModel.insert(recepieDetails);
             }
             super.onPostExecute(s);

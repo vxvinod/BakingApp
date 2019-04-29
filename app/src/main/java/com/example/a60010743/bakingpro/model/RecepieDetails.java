@@ -7,8 +7,19 @@ import android.support.annotation.NonNull;
 @Entity(tableName = "recepie_details_table")
 public class RecepieDetails  {
 
-    @PrimaryKey @NonNull
+    @PrimaryKey(autoGenerate = true)
+    private int id = 0;
+    @NonNull
     private String recepieItem;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     private String recepieIng;
     private String recepieSteps;
     private boolean favourite;

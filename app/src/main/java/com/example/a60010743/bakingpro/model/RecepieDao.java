@@ -40,6 +40,9 @@ public interface RecepieDao {
     @Query("SELECT recepieIng FROM recepie_details_table WHERE favourite = 1")
     LiveData<List<String>> getFavIngredients();
 
+    @Query("SELECT recepieItem FROM recepie_details_table WHERE recepieItem = :recepieItem")
+    String getRecepieItem(String recepieItem);
+
 
 
 }

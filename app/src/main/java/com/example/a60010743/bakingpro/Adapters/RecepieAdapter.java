@@ -38,7 +38,12 @@ public class RecepieAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     @Override
@@ -46,13 +51,9 @@ public class RecepieAdapter extends BaseAdapter {
        View gridView;
         LayoutInflater inflater = (LayoutInflater) mContext
                                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (convertView == null) {
-            gridView = inflater.inflate(R.layout.grid_view_layout, null);
-            TextView tv = (TextView) gridView.findViewById(R.id.recepie_item_gridview);
-            tv.setText(mRecepieNames.get(position));
-        } else {
-            gridView = (View) convertView;
-        }
+        gridView = inflater.inflate(R.layout.grid_view_layout, null);
+        TextView tv = (TextView) gridView.findViewById(R.id.recepie_item_gridview);
+        tv.setText(mRecepieNames.get(position));
         return gridView;
     }
 }

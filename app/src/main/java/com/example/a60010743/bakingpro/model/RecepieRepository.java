@@ -56,6 +56,12 @@ public class RecepieRepository  {
         new updateAsyncTask(mRecepieDao).execute(updateDb);
     }
 
+    public String getRecepieItem(String recItem) {
+        String recepieItem = mRecepieDao.getRecepieItem(recItem);
+        return recepieItem;
+    }
+
+
     public static class insertAsyncTask extends AsyncTask<RecepieDetails, Void, Void>{
 
         private RecepieDao mRecepieDao;
@@ -65,10 +71,13 @@ public class RecepieRepository  {
 
         @Override
         protected Void doInBackground(RecepieDetails... recepieDetails) {
-            mRecepieDao.insertRecepieDetails(recepieDetails[0]);
+            if(mRecepieDao.getRecepieItem(recepieDetails[0].getRecepieItem()) == null) {
+                mRecepieDao.insertRecepieDetails(recepieDetails[0]);
+            }
             return null;
         }
     }
+
 
     public static class updateAsyncTask extends AsyncTask<UpdateDetails, Void, Void>{
 
