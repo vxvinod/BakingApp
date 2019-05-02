@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+
 import com.example.a60010743.bakingpro.Fragments.RecepieDetailsFragments;
 import com.example.a60010743.bakingpro.Fragments.RecepieStepsFragments;
 import com.example.a60010743.bakingpro.model.RecepieViewModel;
@@ -18,11 +21,15 @@ public class RecepieStepsActivity extends AppCompatActivity implements
     private RecepieStepsFragments mRecepieStepsFragments;
     private boolean mTwoPane = false;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recepie_steps);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.step_toolbar);
+        setSupportActionBar(toolbar);
         mTwoPane = getIntent().getExtras().getBoolean(getString(R.string.twoPane));
         mRecepieItem = getIntent().getStringExtra(getString(R.string.recepieItem));
         if(mTwoPane == true) {
@@ -51,7 +58,19 @@ public class RecepieStepsActivity extends AppCompatActivity implements
                     .add(R.id.recepie_steps_fragment_container, mRecepieStepsFragments)
                     .commit();
         }
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                   onBackPressed();
+            }
+        });
     }
+
+
 
     @Override
     public void onStepClicked(int navigationIndex) {
@@ -77,8 +96,9 @@ public class RecepieStepsActivity extends AppCompatActivity implements
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         outState.putBoolean(getString(R.string.twoPane), mTwoPane);
         outState.putString(getString(R.string.recepieItem), mRecepieItem);
-        super.onSaveInstanceState(outState);
+
     }
 }

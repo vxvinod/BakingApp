@@ -1,28 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/recepeie_details_tab_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    >
+    android:orientation="vertical"
+    tools:context=".RecepieStepsActivity">
 
-    <fragment
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/recepie_steps_fragment_container"
-        android:name="com.example.a60010743.bakingpro.Fragments.RecepieStepsFragments"
-        ></fragment>
-
-    <View
-        android:layout_width="2dp"
+    <include
+        android:id="@+id/step_toolbar"
+        layout="@layout/toolbar" />
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/darker_gray"/>
+        android:orientation="horizontal"
+        >
 
-    <FrameLayout
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/recepie_details_fragment_container"
-        ></FrameLayout>
+        <fragment
+            android:id="@+id/recepie_steps_fragment_container"
+            android:name="com.example.a60010743.bakingpro.Fragments.RecepieStepsFragments"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"></fragment>
 
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray"/>
+
+        <FrameLayout
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/recepie_details_fragment_container"
+            ></FrameLayout>
+
+    </LinearLayout>
 </LinearLayout>

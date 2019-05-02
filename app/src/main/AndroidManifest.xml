@@ -23,11 +23,13 @@
         <activity
             android:name=".RecepieStepsActivity"
             android:label="@string/title_activity_recepie_steps"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
         <activity
             android:name=".RecepieDetailsActivity"
             android:label="@string/title_activity_recepie_details"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
 
         <receiver android:name=".Widget.BakingAppWidget">
             <intent-filter>
