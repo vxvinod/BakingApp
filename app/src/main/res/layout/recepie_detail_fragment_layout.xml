@@ -10,19 +10,22 @@
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="0dp"
-        android:layout_height="79dp"
+        android:layout_height="52dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:background="?android:attr/windowBackground"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/description"
+        app:layout_constraintVertical_bias="1.0"
         app:menu="@menu/navigation" />
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/detail_video_view"
         android:layout_width="match_parent"
-        android:layout_height="273dp"
+        android:layout_height="177dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -34,40 +37,52 @@
     <TextView
         android:id="@+id/shortDesc"
         android:layout_width="313dp"
-        android:layout_height="84dp"
+        android:layout_height="59dp"
+        android:layout_gravity="center"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/detail_video_view"
-        android:textAlignment="center"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:textSize="24sp"
+        android:layout_marginTop="44dp"
         android:fontFamily="sans-serif"
-        android:textStyle="bold"/>
+        android:gravity="center"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.509"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <TextView
         android:id="@+id/description"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Description"
-        app:layout_constraintEnd_toEndOf="@+id/shortDesc"
-        app:layout_constraintStart_toStartOf="@+id/shortDesc"
-        app:layout_constraintTop_toBottomOf="@+id/shortDesc"
-        android:textAlignment="center"
-        android:gravity="center"
+        android:layout_height="37dp"
         android:layout_gravity="center"
-        android:textSize="18sp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="36dp"
         android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="Description"
+        android:textAlignment="center"
+        android:textSize="18sp"
         android:textStyle="bold"
-        />
+        app:layout_constraintEnd_toEndOf="@+id/shortDesc"
+        app:layout_constraintHorizontal_bias="0.394"
+        app:layout_constraintStart_toStartOf="@+id/shortDesc"
+        app:layout_constraintTop_toBottomOf="@+id/shortDesc" />
 
-
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="329dp"
+        android:layout_height="85dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="52dp"
+        app:layout_constraintEnd_toEndOf="@+id/detail_video_view"
+        app:layout_constraintHorizontal_bias="0.521"
+        app:layout_constraintStart_toStartOf="@+id/detail_video_view"
+        app:layout_constraintTop_toBottomOf="@+id/detail_video_view"
+        app:srcCompat="@drawable/example_appwidget_preview" />
 
 
 </android.support.constraint.ConstraintLayout>

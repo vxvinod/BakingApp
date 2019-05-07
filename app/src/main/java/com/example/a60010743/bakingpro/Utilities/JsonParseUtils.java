@@ -16,6 +16,8 @@ public  class JsonParseUtils {
         final String NAME = "name";
         final String INGREDIENTS = "ingredients";
         final String STEPS = "steps";
+        final String SERVINGS = "servings";
+        final String IMAGE = "image";
 
         List<RecepieDetails> recepieCollection = new ArrayList<RecepieDetails>();
         JSONArray jsonData = new JSONArray(recepieData);
@@ -25,7 +27,8 @@ public  class JsonParseUtils {
         for(int i = 0; i < jsonData.length(); i++) {
             JSONObject data = jsonData.getJSONObject(i);
             recepieCollection.add(new RecepieDetails(data.optString(NAME),
-                                    data.optString(INGREDIENTS), data.optString(STEPS)));
+                                    data.optString(INGREDIENTS), data.optString(STEPS),
+                                    data.optString(SERVINGS), data.optString(IMAGE)));
         }
         return recepieCollection;
     }

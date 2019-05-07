@@ -4,12 +4,15 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 @Entity(tableName = "recepie_details_table")
 public class RecepieDetails  {
 
     @PrimaryKey(autoGenerate = true)
     private int id = 0;
-    @NonNull
+    @NonNull @SerializedName("name")
     private String recepieItem;
 
     public int getId() {
@@ -20,16 +23,41 @@ public class RecepieDetails  {
         this.id = id;
     }
 
+    @SerializedName("ingredients")
     private String recepieIng;
+    @SerializedName("steps")
     private String recepieSteps;
+    @Expose(serialize = false)
     private boolean favourite;
 
+    private String servings = "";
+    private String image = "";
+
+    public String getServings() {
+        return servings;
+    }
+
+    public void setServings(String servings) {
+        this.servings = servings;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     // Constructor
-    public RecepieDetails(String recepieItem, String recepieIng, String recepieSteps) {
+    public RecepieDetails(String recepieItem, String recepieIng, String recepieSteps, String servings,
+                                String image) {
         this.recepieItem = recepieItem;
         this.recepieIng = recepieIng;
         this.recepieSteps = recepieSteps;
         this.favourite=false;
+        this.servings = servings;
+        this.image = image;
     }
 
     public boolean isFavourite() {

@@ -8,11 +8,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.a60010743.bakingpro.R;
@@ -32,6 +34,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 
@@ -48,6 +51,7 @@ public class RecepieDetailsFragments extends Fragment {
     private TextView mShortDesc;
     private PlayerView mPlayerView;
     private SimpleExoPlayer mPlayer;
+    private ImageView mImageView;
     private boolean mPlayWhenReady = false;
     private int mCurrentWindow = 0;
     private long mPlayBackPosition = 0;
@@ -79,6 +83,7 @@ public class RecepieDetailsFragments extends Fragment {
         mPlayerView = (PlayerView) view.findViewById(R.id.detail_video_view);
         mDescription = (TextView) view.findViewById(R.id.description);
         mShortDesc   = (TextView) view.findViewById(R.id.shortDesc);
+        mImageView = (ImageView) view.findViewById(R.id.imageView);
         BottomNavigationView mNavigation = (BottomNavigationView) view.findViewById(R.id.navigation);
         mNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -140,8 +145,10 @@ public class RecepieDetailsFragments extends Fragment {
     };
 
     public void setUpPlayer(String videoUrl, String thumbnailUrl) {
-        if (videoUrl.isEmpty() || videoUrl.equals("") || videoUrl == null) {
-            if (thumbnailUrl.isEmpty() || thumbnailUrl.equals("") || thumbnailUrl == null) {
+       // if (videoUrl.isEmpty() || videoUrl.equals("") || videoUrl == null) {
+        if(TextUtils.isEmpty(videoUrl)) {
+          //  if (thumbnailUrl.isEmpty() || thumbnailUrl.equals("") || thumbnailUrl == null) {
+            if(TextUtils.isEmpty(thumbnailUrl)) {
                 return;
             } else {
                 Uri uri = Uri.parse(mRecepieStepDetails.getThumbnailUrl());
@@ -182,8 +189,7 @@ public class RecepieDetailsFragments extends Fragment {
                         return;
                     } else {
                         Uri uri = Uri.parse(mRecepieStepDetails.getThumbnailUrl());
-                        MediaSource mediaSource = buildMediaSource(uri);
-                        mPlayer.prepare(mediaSource, true, false);
+                        Picasso.with(getContext()).load(uri).into(mImageView);
                     }
                 } else {
                     Uri uri = Uri.parse(mRecepieStepDetails.getVideoUrl());

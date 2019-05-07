@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import com.example.a60010743.bakingpro.Fragments.RecepieDetailsFragments;
@@ -17,8 +18,8 @@ public class RecepieStepsActivity extends AppCompatActivity implements
 
     private final String TAG = "RecepieStepsActivity";
     private RecepieViewModel mRecepieViewModel;
-    private String mRecepieItem;
-    private RecepieStepsFragments mRecepieStepsFragments;
+    private String mRecepieItem = null;
+    private RecepieStepsFragments mRecepieStepsFragments = null;
     private boolean mTwoPane = false;
 
 
@@ -30,8 +31,15 @@ public class RecepieStepsActivity extends AppCompatActivity implements
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.step_toolbar);
         setSupportActionBar(toolbar);
-        mTwoPane = getIntent().getExtras().getBoolean(getString(R.string.twoPane));
-        mRecepieItem = getIntent().getStringExtra(getString(R.string.recepieItem));
+        if(savedInstanceState != null) {
+            mRecepieItem = savedInstanceState.getString("recepieItem");
+            mTwoPane = savedInstanceState.getBoolean("twoPane");
+            Log.d("SAVEINSTANCE", mRecepieItem);
+        }
+        if(savedInstanceState == null) {
+            mTwoPane = getIntent().getExtras().getBoolean(getString(R.string.twoPane));
+            mRecepieItem = getIntent().getStringExtra(getString(R.string.recepieItem));
+        }
         if(mTwoPane == true) {
             // MasterView Layout
             RecepieDetailsFragments recepieDetailsFragments = new RecepieDetailsFragments();
@@ -44,19 +52,24 @@ public class RecepieStepsActivity extends AppCompatActivity implements
                     .commit();
             } else {
             // Mobile View
-            mRecepieStepsFragments = new RecepieStepsFragments();
-            Intent intent = getIntent();
-            mRecepieItem = intent.getStringExtra(getString(R.string.recepieItem));
-
-            mRecepieStepsFragments.setRecepieItem(mRecepieItem);
-            mRecepieViewModel = ViewModelProviders.of(this).get(RecepieViewModel.class);
-            mRecepieStepsFragments.setRecepieViewModel(mRecepieViewModel);
+            Log.d("SAVEINSTANCE", "Inside Mobile View");
 
             // Initiate Recepie Step Fragment container
             FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .add(R.id.recepie_steps_fragment_container, mRecepieStepsFragments)
-                    .commit();
+         //   if(savedInstanceState != null) {
+                mRecepieStepsFragments = (RecepieStepsFragments)
+                        fragmentManager.findFragmentById(R.id.recepie_steps_fragment_container);
+           // }
+            if(!mRecepieStepsFragments.isInLayout() ) {
+                Log.d("INITIAL FRAGMENTS","fargInstance null");
+                mRecepieStepsFragments = new RecepieStepsFragments();
+                mRecepieStepsFragments.setRecepieItem(mRecepieItem);
+                mRecepieViewModel = ViewModelProviders.of(this).get(RecepieViewModel.class);
+                mRecepieStepsFragments.setRecepieViewModel(mRecepieViewModel);
+                fragmentManager.beginTransaction()
+                        .add(R.id.recepie_steps_fragment_container, mRecepieStepsFragments)
+                        .commit();
+            }
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -99,6 +112,5 @@ public class RecepieStepsActivity extends AppCompatActivity implements
         super.onSaveInstanceState(outState);
         outState.putBoolean(getString(R.string.twoPane), mTwoPane);
         outState.putString(getString(R.string.recepieItem), mRecepieItem);
-
     }
 }

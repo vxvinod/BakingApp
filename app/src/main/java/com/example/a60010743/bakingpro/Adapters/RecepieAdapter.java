@@ -1,44 +1,69 @@
 package com.example.a60010743.bakingpro.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.a60010743.bakingpro.MainActivity;
 import com.example.a60010743.bakingpro.R;
+import com.example.a60010743.bakingpro.RecepieDetailsActivity;
+import com.example.a60010743.bakingpro.RecepieStepsActivity;
+import com.example.a60010743.bakingpro.model.RecepieDetails;
+import com.example.a60010743.bakingpro.model.RecepieIngredients;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class RecepieAdapter extends BaseAdapter {
+import static android.support.constraint.Constraints.TAG;
+
+public class RecepieAdapter extends RecyclerView.Adapter<RecepieAdapter.ItemHolder> {
     private Context mContext;
     private List<String> mRecepieNames;
+    private List<RecepieDetails> mRecepieDetails;
+    private boolean mTwoPane;
 
-    public RecepieAdapter(Context context, List<String> recepieNames) {
+
+    public static class ItemHolder extends RecyclerView.ViewHolder {
+        TextView itemName;
+        ImageView itemImage;
+        ConstraintLayout itemContainer;
+        public ItemHolder(View itemView) {
+            super(itemView);
+            itemName  = (TextView) itemView.findViewById(R.id.itemName);
+            itemImage = (ImageView) itemView.findViewById(R.id.itemImage);
+            itemContainer = (ConstraintLayout) itemView.findViewById(R.id.recepieItemContainer);
+        }
+    }
+
+    public RecepieAdapter(Context context, List<RecepieDetails> recepieDetails, boolean twoPane) {
         mContext = context;
-        mRecepieNames = recepieNames;
+        mRecepieDetails = recepieDetails;
+        mTwoPane = twoPane;
     }
 
-    @Override
-    public int getCount() {
-        if(mRecepieNames == null) { return 0; }
-        return mRecepieNames.size();
-    }
 
-    public void setRecepieItems(List<String> recepieItems) {
-        mRecepieNames = recepieItems;
+//    public void setRecepieItems(List<String> recepieItems) {
+//        for(String s:recepieItems) {
+//            Log.d(TAG, "INSIDE ADAPTER"+s);
+//        }
+//        mRecepieNames = recepieItems;
+//        notifyDataSetChanged();
+//    }
+    public void setRecepieItems(List<RecepieDetails> recepieDetails) {
+//        for(String s:recepieDetails) {
+//            Log.d(TAG, "INSIDE ADAPTER"+s);
+//        }
+        mRecepieDetails = recepieDetails;
         notifyDataSetChanged();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return null;
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
     }
 
     @Override
@@ -47,13 +72,42 @@ public class RecepieAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-       View gridView;
-        LayoutInflater inflater = (LayoutInflater) mContext
-                                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        gridView = inflater.inflate(R.layout.grid_view_layout, null);
-        TextView tv = (TextView) gridView.findViewById(R.id.recepie_item_gridview);
-        tv.setText(mRecepieNames.get(position));
-        return gridView;
+    public long getItemId(int position) {
+        return position;
     }
+
+    @Override
+    public int getItemCount() {
+        if(mRecepieDetails == null) return 0;
+        return mRecepieDetails.size();
+    }
+
+    @Override
+    public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View tv = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.recepie_item_view_layout, parent, false);
+        RecepieAdapter.ItemHolder vh = new RecepieAdapter.ItemHolder(tv);
+        return vh;
+    }
+
+    @Override
+    public void onBindViewHolder(ItemHolder holder,final int position) {
+        holder.itemName.setText(mRecepieDetails.get(position).getRecepieItem());
+        if(! TextUtils.isEmpty(mRecepieDetails.get(position).getImage())) {
+            Picasso.with(mContext).load(mRecepieDetails.get(position).getImage()).into(holder.itemImage);
+        } else {
+            Picasso.with(mContext).load(R.drawable.example_appwidget_preview).into(holder.itemImage);
+        }
+        holder.itemContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent;
+                intent = new Intent(mContext, RecepieStepsActivity.class);
+                intent.putExtra( "twoPane", mTwoPane);
+                intent.putExtra("recepieItem", mRecepieDetails.get(position).getRecepieItem().toString());
+                mContext.startActivity(intent);
+            }
+        });
+    }
+
 }

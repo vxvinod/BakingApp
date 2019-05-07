@@ -71,11 +71,10 @@ public class RecepieStepsFragments extends Fragment  implements
         }
     }
 
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        setRetainInstance(true);
         View view = inflater.inflate(R.layout.recepie_steps_fragment_layout, container, false);
         ButterKnife.bind(this, view);
         return view;
@@ -84,13 +83,14 @@ public class RecepieStepsFragments extends Fragment  implements
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        setRetainInstance(true);
         Intent intent = getActivity().getIntent();
-        if(savedInstanceState == null) {
-            mRecepieItem = intent.getStringExtra("recepieItem");
-        } else {
+        if(savedInstanceState != null) {
             mRecepieItem = savedInstanceState.getString("recepieItem");
+            Log.d("SCREEN TURNED", mRecepieItem);
         }
+        if(mRecepieItem == null) { mRecepieItem = intent.getStringExtra("recepieItem"); }
+
         mStepsLayoutManager = new LinearLayoutManager(getContext());
         resStpRecyclerView.setLayoutManager(mStepsLayoutManager);
         mAdapter = new RecepieStepsAdapter(getContext(), null,
@@ -148,6 +148,7 @@ public class RecepieStepsFragments extends Fragment  implements
             @Override
             public void onChanged(@Nullable String s) {
                 try {
+                    Log.d("INSIDE GET INSTANCE", s);
                     mRecepieIngredients = JsonParseUtils.parseIngData(s);
                     mIngAdapter = new RecepieIngAdapter(getContext(),
                             mRecepieIngredients);
@@ -163,8 +164,8 @@ public class RecepieStepsFragments extends Fragment  implements
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putString("recepieItem", mRecepieItem);
         super.onSaveInstanceState(outState);
+        outState.putString("recepieItem", mRecepieItem);
     }
 
     public void setRecepieStepDetails(List<RecepieStepDetails> recepieStepDetails) {
@@ -176,6 +177,7 @@ public class RecepieStepsFragments extends Fragment  implements
     }
 
     public void setRecepieItem(String recepieItem) {
+        Log.d("INSIDE SET RECEPIE ITEM", recepieItem);
         mRecepieItem = recepieItem;
     }
 

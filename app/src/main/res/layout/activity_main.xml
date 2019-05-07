@@ -7,21 +7,30 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <GridView
-        android:id="@+id/baking_grid_view"
+    <!--<GridView-->
+        <!--android:id="@+id/baking_grid_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:numColumns="1"-->
+        <!--android:verticalSpacing="25dp"-->
+        <!--android:horizontalSpacing="30dp"-->
+        <!--android:gravity="center"-->
+        <!--android:columnWidth="150dp"-->
+        <!--android:stretchMode="columnWidth"-->
+        <!--android:padding="60dp"-->
+        <!--android:textAlignment="center"-->
+
+
+    <!--&gt;</GridView>-->
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recepieItemRecyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="1"
-        android:verticalSpacing="25dp"
-        android:horizontalSpacing="30dp"
-        android:gravity="center"
-        android:columnWidth="150dp"
-        android:stretchMode="columnWidth"
-        android:padding="60dp"
-        android:textAlignment="center"
-
-
-    ></GridView>
+        android:layout_margin="20dp"
+        android:layout_marginTop="50dp"
+        android:padding="5dp"
+        android:scrollbars="vertical"/>
 
     <!--<android.support.design.widget.BottomNavigationView-->
         <!--android:id="@+id/navigation"-->
