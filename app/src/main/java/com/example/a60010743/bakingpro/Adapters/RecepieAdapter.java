@@ -2,28 +2,21 @@ package com.example.a60010743.bakingpro.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.a60010743.bakingpro.MainActivity;
 import com.example.a60010743.bakingpro.R;
-import com.example.a60010743.bakingpro.RecepieDetailsActivity;
 import com.example.a60010743.bakingpro.RecepieStepsActivity;
 import com.example.a60010743.bakingpro.model.RecepieDetails;
-import com.example.a60010743.bakingpro.model.RecepieIngredients;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-
-import static android.support.constraint.Constraints.TAG;
 
 public class RecepieAdapter extends RecyclerView.Adapter<RecepieAdapter.ItemHolder> {
     private Context mContext;
@@ -96,7 +89,7 @@ public class RecepieAdapter extends RecyclerView.Adapter<RecepieAdapter.ItemHold
         if(! TextUtils.isEmpty(mRecepieDetails.get(position).getImage())) {
             Picasso.with(mContext).load(mRecepieDetails.get(position).getImage()).into(holder.itemImage);
         } else {
-            Picasso.with(mContext).load(R.drawable.example_appwidget_preview).into(holder.itemImage);
+            Picasso.with(mContext).load(R.drawable.no_picture_available).into(holder.itemImage);
         }
         holder.itemContainer.setOnClickListener(new View.OnClickListener() {
             @Override
