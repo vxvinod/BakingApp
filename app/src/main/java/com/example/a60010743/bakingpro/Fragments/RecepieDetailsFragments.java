@@ -55,7 +55,7 @@ public class RecepieDetailsFragments extends Fragment {
     private PlayerView mPlayerView;
     private SimpleExoPlayer mPlayer;
     private ImageView mImageView;
-    private boolean mPlayWhenReady = false;
+    private boolean mPlayWhenReady = true;
     private int mCurrentWindow = 0;
     private long mPlayBackPosition = 0;
     private RecepieStepDetails mRecepieStepDetails;
@@ -193,6 +193,7 @@ public class RecepieDetailsFragments extends Fragment {
                     new DefaultTrackSelector(adaptiveTrackSelectionFactory), new DefaultLoadControl());
             mPlayer.addListener(componentListener);
             mPlayerView.setPlayer(mPlayer);
+            mPlayer.setPlayWhenReady(mPlayWhenReady);
             if(mRecepieStepDetails != null) {
                 videoUrl = mRecepieStepDetails.getVideoUrl().toString();
                 thumbnailUrl = mRecepieStepDetails.getThumbnailUrl().toString();
