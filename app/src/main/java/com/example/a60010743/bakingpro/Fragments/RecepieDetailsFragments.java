@@ -21,6 +21,7 @@ import com.example.a60010743.bakingpro.R;
 import com.example.a60010743.bakingpro.Utilities.JsonParseUtils;
 import com.example.a60010743.bakingpro.model.RecepieStepDetails;
 import com.example.a60010743.bakingpro.model.RecepieViewModel;
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -34,6 +35,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -42,6 +44,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class RecepieDetailsFragments extends Fragment {
 
@@ -63,7 +66,7 @@ public class RecepieDetailsFragments extends Fragment {
     private List<RecepieStepDetails> mRecepieStepDetailsList;
     private String mRecepieItem;
 
-
+    Unbinder unbinder;
     public RecepieDetailsFragments() {
 
     }
@@ -78,12 +81,22 @@ public class RecepieDetailsFragments extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setRetainInstance(true);
         componentListener = new RecepieDetailsFragments.ComponentListener();
         mTextMessage = (TextView) view.findViewById(R.id.message);
         mPlayerView = (PlayerView) view.findViewById(R.id.detail_video_view);
         mDescription = (TextView) view.findViewById(R.id.description);
         mShortDesc   = (TextView) view.findViewById(R.id.shortDesc);
         mImageView = (ImageView) view.findViewById(R.id.imageView);
+
+        if(savedInstanceState!=null) {
+            mRecepieItem = savedInstanceState.getString("recepieItem");
+            mNavigationIndex = savedInstanceState.getInt("navigationIndex");
+            mCurrentWindow = savedInstanceState.getInt(getString(R.string.currentWindow));
+            mPlayBackPosition = savedInstanceState.getLong(getString(R.string.playBackposition));
+            mPlayWhenReady = savedInstanceState.getBoolean(getString(R.string.playWhenReady));
+        }
+
         BottomNavigationView mNavigation = (BottomNavigationView) view.findViewById(R.id.navigation);
         mNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -145,20 +158,26 @@ public class RecepieDetailsFragments extends Fragment {
     };
 
     public void setUpPlayer(String videoUrl, String thumbnailUrl) {
-       // if (videoUrl.isEmpty() || videoUrl.equals("") || videoUrl == null) {
         if(TextUtils.isEmpty(videoUrl)) {
-          //  if (thumbnailUrl.isEmpty() || thumbnailUrl.equals("") || thumbnailUrl == null) {
             if(TextUtils.isEmpty(thumbnailUrl)) {
                 return;
             } else {
                 Uri uri = Uri.parse(mRecepieStepDetails.getThumbnailUrl());
                 MediaSource mediaSource = buildMediaSource(uri);
-                mPlayer.prepare(mediaSource, true, false);
+                boolean haveStartPosition = mCurrentWindow != C.INDEX_UNSET;
+                if (haveStartPosition) {
+                    mPlayer.seekTo(mCurrentWindow, mPlayBackPosition);
+                }
+                mPlayer.prepare(mediaSource, !haveStartPosition, false);
             }
         } else {
             Uri uri = Uri.parse(mRecepieStepDetails.getVideoUrl());
             MediaSource mediaSource = buildMediaSource(uri);
-            mPlayer.prepare(mediaSource, true, false);
+            boolean haveStartPosition = mCurrentWindow != C.INDEX_UNSET;
+            if (haveStartPosition) {
+                mPlayer.seekTo(mCurrentWindow, mPlayBackPosition);
+            }
+            mPlayer.prepare(mediaSource, !haveStartPosition, false);
         }
     }
 
@@ -174,18 +193,13 @@ public class RecepieDetailsFragments extends Fragment {
                     new DefaultTrackSelector(adaptiveTrackSelectionFactory), new DefaultLoadControl());
             mPlayer.addListener(componentListener);
             mPlayerView.setPlayer(mPlayer);
-
-            mPlayer.setPlayWhenReady(mPlayWhenReady);
-            mPlayer.seekTo(mCurrentWindow, mPlayBackPosition);
-
             if(mRecepieStepDetails != null) {
                 videoUrl = mRecepieStepDetails.getVideoUrl().toString();
                 thumbnailUrl = mRecepieStepDetails.getThumbnailUrl().toString();
             }
-
             if (videoUrl != null) {
-                if (videoUrl.isEmpty() || videoUrl.equals("") || videoUrl == null) {
-                    if (thumbnailUrl.isEmpty() || thumbnailUrl.equals("") || thumbnailUrl == null) {
+                if (TextUtils.isEmpty(videoUrl)) {
+                    if (TextUtils.isEmpty(thumbnailUrl)) {
                         return;
                     } else {
                         Uri uri = Uri.parse(mRecepieStepDetails.getThumbnailUrl());
@@ -194,7 +208,11 @@ public class RecepieDetailsFragments extends Fragment {
                 } else {
                     Uri uri = Uri.parse(mRecepieStepDetails.getVideoUrl());
                     MediaSource mediaSource = buildMediaSource(uri);
-                    mPlayer.prepare(mediaSource, true, false);
+                    boolean haveStartPosition = mCurrentWindow != C.INDEX_UNSET;
+                    if (haveStartPosition) {
+                        mPlayer.seekTo(mCurrentWindow, mPlayBackPosition);
+                    }
+                    mPlayer.prepare(mediaSource, !haveStartPosition, false);
                 }
             }
         }
@@ -209,28 +227,27 @@ public class RecepieDetailsFragments extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        initializePlayer();
+        Log.d("LIFECYCLE", "START");
+        if (Util.SDK_INT > 23) {
+            initializePlayer();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        hideSystemUi();
-        initializePlayer();
-    }
-
-    private void hideSystemUi() {
-        mPlayerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        if (Util.SDK_INT <= 23 || mPlayer == null) {
+            initializePlayer();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        if (mPlayer != null) {
+            mCurrentWindow = mPlayer.getCurrentWindowIndex();
+            mPlayBackPosition = mPlayer.getContentPosition();
+        }
         releasePlayer();
     }
 
@@ -240,14 +257,24 @@ public class RecepieDetailsFragments extends Fragment {
         releasePlayer();
     }
 
+
     private void releasePlayer() {
         if(mPlayer != null) {
-            mPlayBackPosition = mPlayer.getCurrentPosition();
+            mPlayBackPosition = mPlayer.getContentPosition();
             mCurrentWindow = mPlayer.getCurrentWindowIndex();
             mPlayWhenReady = mPlayer.getPlayWhenReady();
             mPlayer.removeListener(componentListener);
+            mPlayer.stop();
             mPlayer.release();
             mPlayer = null;
+        }
+    }
+
+    private void updateStartPosition() {
+        if (mPlayer != null) {
+            mPlayWhenReady = mPlayer.getPlayWhenReady();
+            mCurrentWindow = mPlayer.getCurrentWindowIndex();
+            mPlayBackPosition = Math.max(0, mPlayer.getContentPosition());
         }
     }
 
@@ -274,5 +301,21 @@ public class RecepieDetailsFragments extends Fragment {
                     break;
             }
         }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        updateStartPosition();
+        outState.putString("recepieItem", mRecepieItem);
+        outState.putInt("navigationIndex", mNavigationIndex);
+        outState.putInt(getString(R.string.currentWindow), mCurrentWindow);
+        outState.putLong(getString(R.string.playBackposition),  mPlayBackPosition);
+        outState.putBoolean(getString(R.string.playWhenReady), mPlayWhenReady);
     }
 }

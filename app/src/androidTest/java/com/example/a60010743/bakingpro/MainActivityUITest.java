@@ -48,20 +48,40 @@ public class MainActivityUITest {
         return new RecyclerViewMatcher(recyclerViewId);
     }
 
-//    @Test
-//    public void testRecipeListText(){
-//        String[] items = {"Brownies", "Cheesecake", "Nutella Pie", "Yellow Cake"};
-//        for (int i=0; i<items.length; i++) {
-//            onView(withRecyclerView(R.id.recepieItemRecyclerview).atPosition(1))
-//                    .check(matches(hasDescendant(withText(items[i]))));
-//        }
-//    }
+
+    @Test
+    public void testFirstRecepieText(){
+        onView(ViewMatchers.withId(R.id.recepieItemRecyclerview))
+                .check(matches(atPosition(0, hasDescendant(withText("Brownies")))));
+    }
     @Test
     public void testRecepieStepNavigation(){
-        onView(withRecyclerView(R.id.recepieItemRecyclerview).atPosition(1)).perform(click());
+        onView(withRecyclerView(R.id.recepieItemRecyclerview).atPosition(0)).perform(click());
         onView(withRecyclerView(R.id.recepieStepsRv).atPosition(1)).
                 check(matches(isDisplayed()));
     }
+    //helper methods
+    public static Matcher<View> atPosition(final int position, @NonNull final Matcher<View> itemMatcher) {
+        Preconditions.checkNotNull(itemMatcher);
+        return new BoundedMatcher<View, RecyclerView>(RecyclerView.class) {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("has item at position " + position + ": ");
+                itemMatcher.describeTo(description);
+            }
+
+            @Override
+            protected boolean matchesSafely(final RecyclerView view) {
+                RecyclerView.ViewHolder viewHolder = view.findViewHolderForAdapterPosition(position);
+                if (viewHolder == null) {
+                    // has no item on such position
+                    return false;
+                }
+                return itemMatcher.matches(viewHolder.itemView);
+            }
+        };
+    }
+
 
 
 

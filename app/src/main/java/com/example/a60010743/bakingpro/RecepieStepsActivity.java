@@ -14,7 +14,7 @@ import com.example.a60010743.bakingpro.Fragments.RecepieStepsFragments;
 import com.example.a60010743.bakingpro.model.RecepieViewModel;
 
 public class RecepieStepsActivity extends AppCompatActivity implements
-        RecepieStepsFragments.OnStepClickListener{
+        RecepieStepsFragments.OnStepClickListener {
 
     private final String TAG = "RecepieStepsActivity";
     private RecepieViewModel mRecepieViewModel;
@@ -31,37 +31,36 @@ public class RecepieStepsActivity extends AppCompatActivity implements
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.step_toolbar);
         setSupportActionBar(toolbar);
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             mRecepieItem = savedInstanceState.getString("recepieItem");
             mTwoPane = savedInstanceState.getBoolean("twoPane");
             Log.d("SAVEINSTANCE", mRecepieItem);
-        }
-        if(savedInstanceState == null) {
+        } else {
             mTwoPane = getIntent().getExtras().getBoolean(getString(R.string.twoPane));
             mRecepieItem = getIntent().getStringExtra(getString(R.string.recepieItem));
         }
-        if(mTwoPane == true) {
+        if (mTwoPane == true) {
             // MasterView Layout
             RecepieDetailsFragments recepieDetailsFragments = new RecepieDetailsFragments();
             recepieDetailsFragments.setRecepieItem(mRecepieItem);
             recepieDetailsFragments.setNavigationIndex(getIntent().
-                    getIntExtra(getString(R.string.navigationIndex),1));
+                    getIntExtra(getString(R.string.navigationIndex), 1));
             FragmentManager detailsFragmentManager = getSupportFragmentManager();
             detailsFragmentManager.beginTransaction()
                     .add(R.id.recepie_details_fragment_container, recepieDetailsFragments)
                     .commit();
-            } else {
+
+        } else {
             // Mobile View
             Log.d("SAVEINSTANCE", "Inside Mobile View");
 
             // Initiate Recepie Step Fragment container
             FragmentManager fragmentManager = getSupportFragmentManager();
-         //   if(savedInstanceState != null) {
-                mRecepieStepsFragments = (RecepieStepsFragments)
+            //if (savedInstanceState != null) {
+             mRecepieStepsFragments = (RecepieStepsFragments)
                         fragmentManager.findFragmentById(R.id.recepie_steps_fragment_container);
-           // }
-            if(!mRecepieStepsFragments.isInLayout() ) {
-                Log.d("INITIAL FRAGMENTS","fargInstance null");
+            if (!mRecepieStepsFragments.isInLayout()) {
+                Log.d("INITIAL FRAGMENTS", "fargInstance null");
                 mRecepieStepsFragments = new RecepieStepsFragments();
                 mRecepieStepsFragments.setRecepieItem(mRecepieItem);
                 mRecepieViewModel = ViewModelProviders.of(this).get(RecepieViewModel.class);
@@ -70,24 +69,22 @@ public class RecepieStepsActivity extends AppCompatActivity implements
                         .add(R.id.recepie_steps_fragment_container, mRecepieStepsFragments)
                         .commit();
             }
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
         }
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                   onBackPressed();
-            }
-        });
     }
 
 
-
     @Override
-    public void onStepClicked(int navigationIndex) {
-        if(mTwoPane) {
+    public void onStepClicked( int navigationIndex){
+        if (mTwoPane) {
             // Update RecepieDetails fragment in MasterView Layout.
             RecepieDetailsFragments recepieDetailsFragments = new RecepieDetailsFragments();
             recepieDetailsFragments.setRecepieItem(mRecepieItem);
@@ -107,8 +104,9 @@ public class RecepieStepsActivity extends AppCompatActivity implements
         }
     }
 
+
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState (Bundle outState){
         super.onSaveInstanceState(outState);
         outState.putBoolean(getString(R.string.twoPane), mTwoPane);
         outState.putString(getString(R.string.recepieItem), mRecepieItem);

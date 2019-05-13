@@ -14,4 +14,7 @@
     <string name="recepieItem">recepieItem</string>
     <string name="navigationIndex">navigationIndex</string>
     <string name="exoPlayer">exoplayer</string>
+    <string name="playBackposition">playBackposition</string>
+    <string name="currentWindow">currentWindow</string>
+    <string name="playWhenReady">playWhenReady</string>
 </resources>

@@ -34,36 +34,33 @@ public class RecepieStepsActivityUITest {
         return new RecyclerViewMatcher(recyclerViewId);
     }
 
-//    @Test
-//    public void testRecipeIngListView(){
-//        onData(anything()).inAdapterView(withId(R.id.baking_grid_view)).atPosition(0).
-//                onChildView(withId(R.id.recepie_item_gridview)).perform(click());
-//
-//        onView(withRecyclerView(R.id.ingRecyclerView).atPosition(1))
-//                .check(matches(hasDescendant(withText("unsalted butter: 226 G"))));
-//
-//    }
-//    @Test
-//    public void testRecepieStepListView(){
-//        onData(anything()).inAdapterView(withId(R.id.baking_grid_view)).atPosition(0).
-//                onChildView(withId(R.id.recepie_item_gridview)).perform(click());
-//
-//        onView(withRecyclerView(R.id.recepieStepsRv).atPosition(1))
-//                .check(matches(hasDescendant(withText("Starting prep"))));
-//    }
-//
-//    @Test
-//    public void testRecepieDetailsCheck(){
-//        onData(anything()).inAdapterView(withId(R.id.baking_grid_view)).atPosition(0).
-//                onChildView(withId(R.id.recepie_item_gridview)).perform(click());
-//
-//        onView(withRecyclerView(R.id.recepieStepsRv).atPosition(1))
-//                .perform(click());
-//        onView(withId(R.id.detail_video_view)).check(matches(isDisplayed()));
-//        onView(withId(R.id.shortDesc)).check(matches(isDisplayed()));
-//        onView(withId(R.id.description)).check(matches(isDisplayed()));
-//
-//    }
+    @Test
+    public void testRecipeIngListView(){
+        onView(withRecyclerView(R.id.recepieItemRecyclerview).atPosition(0)).perform(click());
+
+        onView(withRecyclerView(R.id.ingRecyclerView).atPosition(1))
+                .check(matches(hasDescendant(withText("unsalted butter: 226 G"))));
+
+    }
+    @Test
+    public void testRecepieStepListView(){
+        onView(withRecyclerView(R.id.recepieItemRecyclerview).atPosition(0)).perform(click());
+
+        onView(withRecyclerView(R.id.recepieStepsRv).atPosition(1))
+                .check(matches(hasDescendant(withText("Starting prep"))));
+    }
+
+    @Test
+    public void testRecepieDetailsCheck(){
+        onView(withRecyclerView(R.id.recepieItemRecyclerview).atPosition(0)).perform(click());
+
+        onView(withRecyclerView(R.id.recepieStepsRv).atPosition(1))
+                .perform(click());
+        onView(withId(R.id.detail_video_view)).check(matches(isDisplayed()));
+        onView(withId(R.id.shortDesc)).check(matches(isDisplayed()));
+        onView(withId(R.id.description)).check(matches(isDisplayed()));
+
+    }
 
 
 
