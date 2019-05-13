@@ -90,8 +90,8 @@ public class RecepieDetailsFragments extends Fragment {
         mImageView = (ImageView) view.findViewById(R.id.imageView);
 
         if(savedInstanceState!=null) {
-            mRecepieItem = savedInstanceState.getString("recepieItem");
-            mNavigationIndex = savedInstanceState.getInt("navigationIndex");
+            mRecepieItem = savedInstanceState.getString(getString(R.string.recepieItem));
+            mNavigationIndex = savedInstanceState.getInt(getString(R.string.navigationIndex));
             mCurrentWindow = savedInstanceState.getInt(getString(R.string.currentWindow));
             mPlayBackPosition = savedInstanceState.getLong(getString(R.string.playBackposition));
             mPlayWhenReady = savedInstanceState.getBoolean(getString(R.string.playWhenReady));
@@ -312,8 +312,8 @@ public class RecepieDetailsFragments extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         updateStartPosition();
-        outState.putString("recepieItem", mRecepieItem);
-        outState.putInt("navigationIndex", mNavigationIndex);
+        outState.putString(getString(R.string.recepieItem), mRecepieItem);
+        outState.putInt(getString(R.string.navigationIndex), mNavigationIndex);
         outState.putInt(getString(R.string.currentWindow), mCurrentWindow);
         outState.putLong(getString(R.string.playBackposition),  mPlayBackPosition);
         outState.putBoolean(getString(R.string.playWhenReady), mPlayWhenReady);

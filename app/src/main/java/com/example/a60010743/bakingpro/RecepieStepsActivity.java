@@ -32,8 +32,8 @@ public class RecepieStepsActivity extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.step_toolbar);
         setSupportActionBar(toolbar);
         if (savedInstanceState != null) {
-            mRecepieItem = savedInstanceState.getString("recepieItem");
-            mTwoPane = savedInstanceState.getBoolean("twoPane");
+            mRecepieItem = savedInstanceState.getString(getString(R.string.recepieItem));
+            mTwoPane = savedInstanceState.getBoolean(getString(R.string.twoPane));
             Log.d("SAVEINSTANCE", mRecepieItem);
         } else {
             mTwoPane = getIntent().getExtras().getBoolean(getString(R.string.twoPane));
